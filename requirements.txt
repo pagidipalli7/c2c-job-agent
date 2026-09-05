@@ -1,0 +1,8 @@
+requests>=2.32,<3
+urllib3>=2,<3
+PyYAML>=6,<7
+gspread>=6,<7
+google-auth>=2,<3
+anthropic>=1.0,<2
+beautifulsoup4>=4.12,<5
+python-dateutil>=2.9,<3
