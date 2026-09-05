@@ -4,8 +4,9 @@ import unittest
 from agent.analyzer import ClaudeAnalyzer
 from agent.dedupe import Deduper
 from agent.models import Job, make_job_id, normalize_url
-from agent.textsig import employment_hint, find_rate, visa_hint
+from agent.textsig import employment_hint, find_rate, visa_hint, years_required_hint
 from sources.dice import parse_search_page
+from sources.linkedin import parse_search_cards
 
 
 class TestJobId(unittest.TestCase):
@@ -45,6 +46,28 @@ class TestHeuristics(unittest.TestCase):
     def test_rate(self):
         self.assertEqual(find_rate("Rate: $65/hr on C2C"), "$65/hr")
         self.assertIn("60", find_rate("paying $60 - $70 per hour"))
+
+
+class TestYearsHint(unittest.TestCase):
+    def test_years(self):
+        self.assertEqual(years_required_hint("Minimum 8+ years of experience with Power Apps"), 8)
+        self.assertEqual(years_required_hint("5-7 years hands-on Power Automate experience required"), 5)
+        self.assertEqual(years_required_hint("Founded 20 years ago; contract 6 months"), 0)
+        self.assertEqual(years_required_hint("Great Power BI role, no years stated"), 0)
+
+
+class TestLinkedInParser(unittest.TestCase):
+    def test_cards(self):
+        html_ = (
+            '<ul><li><div class="base-card" data-entity-urn="urn:li:jobPosting:4444719463">'
+            '<a class="base-card__full-link" href="https://www.linkedin.com/jobs/view/power-platform-developer-at-x-4444719463?trk=z"></a>'
+            '<h3 class="base-search-card__title">Power Platform Developer</h3><h4>Booz Allen</h4>'
+            '<span class="job-search-card__location">Atlanta, GA</span><time datetime="2026-09-05"></time></div></li></ul>'
+        )
+        cards = parse_search_cards(html_)
+        self.assertEqual(cards[0]["id"], "4444719463")
+        self.assertEqual(cards[0]["company"], "Booz Allen")
+        self.assertEqual(cards[0]["url"], "https://www.linkedin.com/jobs/view/4444719463")
 
 
 class TestAnalyzerParsing(unittest.TestCase):
@@ -112,6 +135,7 @@ class _FakeMessages:
             out.append({
                 "index": j["index"],
                 "match_percent": 92 if "Databricks" in j["title"] else 40,
+                "years_required": 10 if j["company"] == "V4" else j["years_hint"],
                 "missing_skills": "" if "Databricks" in j["title"] else "Snowflake, Java",
                 "employment_type": "C2C" if j["employment_hint"] == "C2C" else "Unclear",
                 "visa_status": "H1B-OK" if j["employment_hint"] == "C2C" else "Unclear",
@@ -134,6 +158,8 @@ class TestAnalyzerEndToEnd(unittest.TestCase):
                 description="Snowflake + Java", employment_hint=""),
             Job(title="Databricks Engineer", company="V3", location="Remote", source="dice",
                 description="Great role. US Citizens only, no sponsorship.", employment_hint="C2C"),
+            Job(title="Databricks Engineer", company="V4", location="Remote", source="dice",
+                description="10+ years of experience required.", employment_hint="C2C"),
         ]
         client = _FakeClient()
         an = ClaudeAnalyzer("profile", {"model": "claude-haiku-4-5"}, client=client)
@@ -145,7 +171,8 @@ class TestAnalyzerEndToEnd(unittest.TestCase):
                          (92, "C2C", "rec@vendor.com"))
         self.assertEqual(jobs[1].missing_skills, "Snowflake, Java")
         self.assertEqual(jobs[2].visa_status, "Restricted")                  # regex hard guard wins
-        kept = [j for j in jobs if j.match_percent >= 80 and j.visa_status != "Restricted"]
+        self.assertEqual(jobs[3].years_required, 10)
+        kept = [j for j in jobs if j.match_percent >= 80 and j.visa_status != "Restricted" and j.years_required <= 7]
         self.assertEqual([j.company for j in kept], ["V1"])
 
 
@@ -180,9 +207,9 @@ class TestGmailParser(unittest.TestCase):
         src = self._source()
         body = (
             "Hi Tarun,\n\nHope you are doing well. Please find the requirement below.\n\n"
-            "Job Title: Azure Data Engineer (Databricks)\nClient: Fortune 100 Bank\nLocation: Remote (EST hours)\n"
+            "Job Title: Power Apps Developer (Canvas + Dataverse)\nClient: Fortune 100 Bank\nLocation: Remote (EST hours)\n"
             "Duration: 12+ months\nRate: $65/hr on C2C\nEmployment Type: C2C / 1099\n\n"
-            "Must have: PySpark, Azure Databricks, ADF, Delta Lake, SQL.\n"
+            "Must have: 6+ years of experience with Power Apps, Power Automate, Dataverse, SQL.\n"
             "Apply here: https://jobs.abctech.com/req/12345?utm_source=email\n"
             "Unsubscribe: https://abctech.com/unsubscribe?u=1\n\nThanks,\nRavi\n"
         )
@@ -190,7 +217,8 @@ class TestGmailParser(unittest.TestCase):
                                            reply_to="hiring@abctech.com"),
                                  cutoff=datetime.now(timezone.utc) - timedelta(hours=3))
         self.assertIsNotNone(job)
-        self.assertEqual(job.title, "Azure Data Engineer (Databricks)")
+        self.assertEqual(job.title, "Power Apps Developer (Canvas + Dataverse)")
+        self.assertEqual(job.years_hint, 6)
         self.assertEqual(job.company, "Fortune 100 Bank")
         self.assertEqual(job.location, "Remote (EST hours)")
         self.assertEqual(job.rate, "$65/hr on C2C")
@@ -206,7 +234,7 @@ class TestGmailParser(unittest.TestCase):
         cutoff = datetime.now(timezone.utc) - timedelta(hours=3)
         self.assertIsNone(src._parse_message(self._raw("Lunch tomorrow?", "Want to grab lunch at noon?"), cutoff))
         self.assertIsNone(src._parse_message(
-            self._raw("New jobs for you: Data Engineer", "Data Engineer contract requirement, client ...",
+            self._raw("New jobs for you: Power Apps Developer", "Power Apps contract requirement, client ...",
                       from_="LinkedIn Jobs <jobs-noreply@linkedin.com>"), cutoff))
 
     def test_html_body_and_subject_title_fallback(self):

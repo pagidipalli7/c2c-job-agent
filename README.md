@@ -1,9 +1,10 @@
 # C2C Job Agent
 
-Automated contract-job aggregator that runs every 2 hours on GitHub Actions, pulls new postings from
-**Dice**, **Gmail (recruiter/vendor emails)** and optionally **SerpAPI Google Jobs**, scores every job
-against `profile.md` with **Claude Haiku** in one batched call, and appends the matches to a
-**Google Sheet**.
+Automated contract-job aggregator that runs every 2 hours on GitHub Actions, pulls new **Power Platform**
+postings from **Dice**, **LinkedIn (public guest search)**, **Adzuna**, keyless remote boards
+(**Remotive / RemoteOK / Jobicy**), **Gmail (recruiter/vendor emails)** and optionally **SerpAPI Google Jobs**,
+scores every job against `profile.md` with **Claude Haiku** in one batched call, and appends the matches to a
+**Google Sheet**. Location scope is anywhere in the USA.
 
 ```
 sources/*  ──fetch()──▶  dedupe (sheet + in-run)  ──▶  Claude (1 batched JSON call)
@@ -18,6 +19,9 @@ sources/*  ──fetch()──▶  dedupe (sheet + in-run)  ──▶  Claude (1
 | `config.yaml` | Keywords, locations, per-source settings, model, sheet columns |
 | `profile.md` | Candidate profile the scorer reads (edit freely; it is sent verbatim to Claude) |
 | `sources/dice.py` | Parses dice.com search results (server-rendered payload) + job-detail JSON-LD |
+| `sources/linkedin.py` | LinkedIn guest job search (no login) + guest posting detail for descriptions |
+| `sources/adzuna.py` | Adzuna official API; skipped when `ADZUNA_APP_ID`/`ADZUNA_APP_KEY` are unset |
+| `sources/remoteboards.py` | Remotive, RemoteOK, Jobicy JSON feeds with strict title matching |
 | `sources/gmail_imap.py` | IMAP scan of the last N hours for vendor requirement emails |
 | `sources/serpapi_jobs.py` | Google Jobs via SerpAPI; skipped when `SERPAPI_KEY` is unset |
 | `agent/analyzer.py` | Claude batch scoring, structured-output schema, defensive JSON parsing |
@@ -36,6 +40,7 @@ sources/*  ──fetch()──▶  dedupe (sheet + in-run)  ──▶  Claude (1
 | `GMAIL_USER` | for Gmail source | Your Gmail address |
 | `GMAIL_APP_PASSWORD` | for Gmail source | 16-char App Password (needs 2-Step Verification) |
 | `SERPAPI_KEY` | optional | Source is skipped gracefully when missing |
+| `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` | optional | Free at https://developer.adzuna.com; skipped when missing |
 
 ### 1. Google Sheet + service account
 1. Google Cloud Console → create/select a project → **APIs & Services → Enable** *Google Sheets API* and *Google Drive API*.
@@ -78,13 +83,15 @@ Claude receives `profile.md` and a JSON array of all *new* candidates (deduped a
 
 | Field | Values |
 |---|---|
-| `match_percent` | 0–100 fit of required skills vs profile |
+| `match_percent` | 0–100 fit of required skills vs profile; non-Power-Platform roles are told to score below 80 |
+| `years_required` | minimum years of experience the posting asks for (0 if not stated) |
 | `missing_skills` | comma-separated required skills not in the profile |
 | `employment_type` | `C2C` / `W2` / `Full-time` / `Unclear` (vendor emails mentioning C2C, corp-to-corp, 1099 ⇒ `C2C`) |
 | `visa_status` | `H1B-OK` / `Restricted` / `Unclear` (`Restricted` = USC only, GC only, USC/GC, no sponsorship, W2-citizens-only, clearance…) |
 | `contact_email` | recruiter/vendor email for C2C jobs (from the sender/reply-to or posting text) |
 
-Hard filters: drop `match_percent < analysis.min_match_percent` (80) and drop `visa_status == Restricted`.
+Hard filters: drop `match_percent < analysis.min_match_percent` (80), drop `visa_status == Restricted`,
+and drop `years_required > analysis.max_years_required` (7).
 A regex guard in `agent/textsig.py` also forces `Restricted` when the text contains explicit
 citizenship-only language, regardless of the model's answer.
 
@@ -100,7 +107,7 @@ otherwise `sha1(lower(company + title + location))`.
 Every run prints per-source counters and a machine-readable summary line:
 
 ```
-SUMMARY source=dice found=41 new=12 dropped_low_match=7 dropped_visa=2 dropped_unanalyzed=0 written=3
+SUMMARY source=dice found=41 new=12 dropped_low_match=7 dropped_visa=2 dropped_experience=1 dropped_unanalyzed=0 written=2
 RUN_SUMMARY {"candidates": 15, "kept": 4, "sources": {...}, "source_errors": {}}
 ```
 
@@ -111,5 +118,8 @@ Exit codes: `0` ok, `2` sheet unavailable (non-dry-run), `3` Claude analysis fai
 
 * Keywords / locations / per-source knobs: `config.yaml`.
 * Gmail noise: `gmail.ignore_sender_domains`, `gmail.job_signals`, `gmail.skill_signals`.
-* Dice: `posted_within` (`ONE`/`THREE`/`SEVEN`), `employment_types`, `max_pages`, `extra_locations` (on-site markets, default Dallas TX), `max_detail_fetches`.
+* Dice: `posted_within` (`ONE`/`THREE`/`SEVEN`), `employment_types`, `remote_only`, `extra_locations`, `max_detail_fetches`.
+* LinkedIn: `posted_within_seconds`, `job_types` (`C` contract, `T` temporary, `F` full-time), `max_pages`, `request_delay_seconds`.
+* Remote boards: `title_terms` (strict title/tag match), `us_locations_only`.
+* Experience cap: `analysis.max_years_required` (0 disables).
 * Analysis: `analysis.model`, `description_chars` (per-job truncation), `min_match_percent`.

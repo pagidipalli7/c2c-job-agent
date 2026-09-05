@@ -1,39 +1,69 @@
 # ---- Search inputs -----------------------------------------------------------
+# Power Platform focus only. Data-engineering-only roles are no longer searched for,
+# and the scorer is told to keep them below the 80% bar if a board returns them anyway.
 keywords:
   - "Power Platform Developer"
   - "Power Apps Developer"
-  - "Power BI Developer"
-  - "Data Engineer"
-  - "Azure Data Engineer"
-  - "Databricks Engineer"
   - "Power Automate Developer"
-  - "Dataverse"
+  - "Power BI Developer"
+  - "Dynamics 365 Developer"
+  - "Dataverse Developer"
 
+# Anywhere in the USA (remote or on-site). Sources use this as the search location.
 locations:
-  - "Remote"
-  - "anywhere in US"
+  - "United States"
 
 # ---- Sources (order = run order). Disable by removing from the list. ----------
 sources:
-  enabled: [dice, gmail, serpapi]
+  enabled: [dice, linkedin, adzuna, remoteboards, gmail, serpapi]
 
 dice:
   max_pages: 2                # 30 results per page per query
-  # Remote jobs come from Dice's workplaceTypes=Remote facet. On-site/hybrid jobs are only pulled
-  # for these radius-50mi markets (Claude still scores them; location is visible in the sheet).
-  extra_locations: ["Dallas, TX"]
-  us_only: true
   posted_within: "ONE"        # ONE = last 24h, THREE, SEVEN
   employment_types: ["CONTRACTS", "THIRD_PARTY"]
+  remote_only: false          # false = nationwide search (remote + on-site anywhere in the US)
+  extra_locations: []         # optional radius-50mi city searches, e.g. ["Dallas, TX"]
+  us_only: true
   fetch_details: true         # pull full description from the job page
   max_detail_fetches: 60      # cap detail-page requests per run
+
+linkedin:
+  # Public guest search (no login). f_TPR = posted-within seconds, f_JT = job types
+  # (C=Contract, T=Temporary, F=Full-time). Posting descriptions come from the guest detail endpoint.
+  location: "United States"
+  posted_within_seconds: 86400
+  job_types: ["C", "T"]
+  max_pages: 2                # ~10-25 cards per page per keyword
+  fetch_details: true
+  max_detail_fetches: 60
+  request_delay_seconds: 0.7
+
+adzuna:
+  # Free official API: https://developer.adzuna.com  -> env ADZUNA_APP_ID / ADZUNA_APP_KEY.
+  # Skipped gracefully when the keys are missing.
+  country: us
+  results_per_page: 50
+  max_days_old: 1
+  contract_only: true         # contract_type=contract; set false to include permanent too
+
+remoteboards:
+  # Keyless JSON feeds (Remotive, RemoteOK, Jobicy). Titles/tags must contain one of these terms.
+  title_terms:
+    - power platform
+    - power apps
+    - powerapps
+    - power automate
+    - power bi
+    - dataverse
+    - dynamics 365
+    - power pages
+  us_locations_only: true
 
 gmail:
   imap_host: imap.gmail.com
   lookback_hours: 3
   folder: INBOX
   max_messages: 200
-  # Senders to ignore entirely (job-board digests are noisy and duplicate Dice/Serp)
   ignore_sender_domains:
     - linkedin.com
     - indeed.com
@@ -42,7 +72,6 @@ gmail:
     - dice.com
     - monster.com
     - careerbuilder.com
-  # An email must contain at least one "job signal" AND one "skill signal"
   job_signals:
     - requirement
     - job title
@@ -66,20 +95,14 @@ gmail:
     - power bi
     - dataverse
     - dynamics 365
-    - data engineer
-    - databricks
-    - pyspark
-    - azure data factory
-    - "adf"
-    - delta lake
-    - lakehouse
-    - etl
-    - sql
+    - power pages
+    - canvas app
+    - model-driven
 
 serpapi:
   engine: google_jobs
   location: "United States"
-  remote_only: true          # ltype=1 (work from home filter)
+  remote_only: false          # nationwide
   max_per_keyword: 20
 
 # ---- Claude analysis ----------------------------------------------------------
@@ -89,10 +112,11 @@ analysis:
   description_chars: 2500     # per-job description truncation in the batched prompt
   max_jobs_per_call: 150      # overflow guard; normally everything fits in ONE call
   min_match_percent: 80
+  max_years_required: 7       # drop jobs whose stated minimum experience exceeds this
 
 # ---- Google Sheet -------------------------------------------------------------
 sheet:
-  worksheet: ""               # empty = first worksheet
+  worksheet: ""
   columns:
     - date_found
     - job_id

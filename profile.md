@@ -27,8 +27,14 @@
 - B.Tech Computer Science
 
 ## Seeking
+- **Power Platform roles only**: Power Apps (Canvas / Model-Driven), Power Automate, Dataverse,
+  Dynamics 365 CE customization, Power BI, Power Pages. Roles whose primary focus is something else
+  (pure data engineering, pure BI on a non-Microsoft stack, .NET development) are NOT what I am
+  looking for, even though I have the data-engineering background.
+- **Experience level:** 6+ years. Roles requiring more than 7 years, or architect / principal titles
+  that demand 10+ years, are out of scope.
 - **Contract roles** — C2C preferred; W2 contract acceptable (log it, flag as W2).
-- **Location:** Remote (US) or Dallas / Irving, TX.
+- **Location:** anywhere in the USA — remote or on-site in any state.
 - **Visa:** H1B — needs sponsorship-friendly or visa-agnostic roles. Roles that say
   US Citizen only, GC only, USC/GC, "no sponsorship", or W2-citizens-only are NOT a match.
 

@@ -57,6 +57,7 @@ class Job:
     contact_email: str = ""
     employment_hint: str = ""      # regex-derived hint passed to the analyzer
     visa_hint: str = ""            # regex-derived hint passed to the analyzer
+    years_hint: int = 0            # regex-derived minimum years of experience (0 = not stated)
     posted_at: str = ""
     extra: dict = field(default_factory=dict)
 
@@ -65,6 +66,7 @@ class Job:
     missing_skills: str = ""
     employment_type: str = ""
     visa_status: str = ""
+    years_required: int = 0        # minimum years stated in the posting per the analyzer (0 = not stated)
 
     @property
     def job_id(self) -> str:

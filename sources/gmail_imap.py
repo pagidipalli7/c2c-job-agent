@@ -12,7 +12,7 @@ from email.utils import getaddresses, parseaddr, parsedate_to_datetime
 from bs4 import BeautifulSoup
 
 from agent.models import Job
-from agent.textsig import URL_RE, employment_hint, find_emails, find_rate, visa_hint
+from agent.textsig import URL_RE, employment_hint, find_emails, find_rate, visa_hint, years_required_hint
 
 from .base import Source
 
@@ -179,6 +179,7 @@ class GmailSource(Source):
             contact_email=contact,
             employment_hint=emp_hint,
             visa_hint=visa_hint(blob),
+            years_hint=years_required_hint(body),
             posted_at=sent.isoformat(),
             extra={"message_id": msg.get("Message-ID", ""), "from": from_addr,
                    "other_emails": emails_in_body[:5]},

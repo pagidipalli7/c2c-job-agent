@@ -4,7 +4,7 @@ from __future__ import annotations
 import os
 
 from agent.models import Job
-from agent.textsig import employment_hint, find_rate, visa_hint
+from agent.textsig import employment_hint, find_rate, visa_hint, years_required_hint
 
 from .base import Source
 
@@ -82,6 +82,7 @@ class SerpApiSource(Source):
                         employment_hint=employment_hint(blob) or (
                             "Contract (type unclear)" if "contract" in str(ext.get("schedule_type", "")).lower() else ""),
                         visa_hint=visa_hint(blob),
+                        years_hint=years_required_hint(desc),
                         posted_at=str(ext.get("posted_at") or ""),
                         extra={"google_job_id": r.get("job_id", ""), "via": r.get("via", "")},
                     ).clean()

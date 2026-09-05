@@ -82,3 +82,27 @@ def find_emails(text: str) -> list[str]:
             seen.add(e)
             out.append(e)
     return out
+
+
+_YEARS = re.compile(
+    r"(?<![\d.$])(\d{1,2})\s*(?:\+|plus)?\s*(?:-|–|to)?\s*(\d{1,2})?\s*\+?\s*(?:years?|yrs?)\b(?![^\n]{0,20}\bago\b)",
+    re.I,
+)
+_YEARS_CONTEXT = re.compile(r"(experience|exp\b|hands[-\s]on|minimum|at least|required|overall|total|working)", re.I)
+
+
+def years_required_hint(text: str) -> int:
+    """Best-effort minimum years of experience stated in the text (0 if none found).
+    Takes the largest 'N+ years' figure that appears near an experience-related word."""
+    best = 0
+    for m in _YEARS.finditer(text or ""):
+        window = (text or "")[max(0, m.start() - 60): m.end() + 60]
+        if not _YEARS_CONTEXT.search(window):
+            continue
+        try:
+            n = int(m.group(1))
+        except ValueError:
+            continue
+        if 1 <= n <= 30:
+            best = max(best, n)
+    return best

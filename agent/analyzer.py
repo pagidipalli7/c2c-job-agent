@@ -8,7 +8,7 @@ import re
 import anthropic
 
 from .models import Job
-from .textsig import visa_restricted_hard
+from .textsig import visa_restricted_hard, years_required_hint
 
 log = logging.getLogger("analyzer")
 
@@ -19,10 +19,12 @@ SYSTEM_PROMPT = """You are a meticulous technical recruiter screening contract j
 You will receive the candidate's profile and a JSON array of job postings. For EVERY posting return one JSON object.
 
 Scoring rules (match_percent, integer 0-100):
-- Compare the posting's REQUIRED skills/experience to the candidate's profile. 90-100 = near-perfect fit; 80-89 = strong fit with at most one minor gap; 60-79 = partial; below 60 = poor.
-- Primary-stack mismatches are heavy penalties: e.g. a role centred on Snowflake/AWS Glue/GCP/Java/Scala/Informatica/Salesforce/.NET when the candidate is Azure + Databricks + Power Platform.
-- Seniority: candidate has 6+ years. Roles asking 10+ years or staff/principal/architect-only titles lose points; junior roles also lose points.
+- The candidate is looking for POWER PLATFORM roles only (Power Apps canvas/model-driven, Power Automate, Dataverse, Dynamics 365 CE, Power BI, Power Pages). A posting whose PRIMARY focus is not Power Platform / Power BI / Dynamics 365 (e.g. a pure data-engineering, Snowflake, AWS, Java, .NET, Salesforce, ServiceNow or SAP role) must score BELOW 80 even if the candidate could technically do it.
+- For Power Platform roles: compare the REQUIRED skills to the profile. 90-100 = near-perfect fit; 80-89 = strong fit with at most one minor gap; 60-79 = partial; below 60 = poor.
+- Seniority: candidate has 6+ years. Roles asking for more than 7 years, or architect/principal/lead titles that imply 10+ years, lose points; junior roles also lose points.
 - Domain experience (utilities, healthcare/FHIR/HIPAA, financial services, SAP PM) is a bonus, never a requirement.
+
+years_required: integer minimum years of experience the posting asks for (e.g. "8+ years" -> 8, "5-7 years" -> 5). 0 if not stated. Use the years_hint field as a cross-check, but the posting text wins.
 
 missing_skills: comma-separated REQUIRED skills the candidate lacks (per the profile's "Not in my toolkit" list and anything else clearly absent). Empty string if none. Do not list nice-to-haves.
 
@@ -51,12 +53,13 @@ OUTPUT_SCHEMA = {
                 "properties": {
                     "index": {"type": "integer"},
                     "match_percent": {"type": "integer"},
+                    "years_required": {"type": "integer"},
                     "missing_skills": {"type": "string"},
                     "employment_type": {"type": "string", "enum": sorted(EMPLOYMENT_VALUES)},
                     "visa_status": {"type": "string", "enum": sorted(VISA_VALUES)},
                     "contact_email": {"type": "string"},
                 },
-                "required": ["index", "match_percent", "missing_skills", "employment_type", "visa_status", "contact_email"],
+                "required": ["index", "match_percent", "years_required", "missing_skills", "employment_type", "visa_status", "contact_email"],
                 "additionalProperties": False,
             },
         }
@@ -94,6 +97,7 @@ class ClaudeAnalyzer:
                     "rate": j.rate,
                     "employment_hint": j.employment_hint,
                     "visa_hint": j.visa_hint,
+                    "years_hint": j.years_hint or years_required_hint(j.description),
                     "contact_email_candidate": j.contact_email,
                     "url": j.url,
                     "description": (j.description or "")[: self.description_chars],
@@ -176,6 +180,11 @@ class ClaudeAnalyzer:
         except Exception:
             mp = 0
         mp = max(0, min(100, mp))
+        try:
+            yrs = int(round(float(re.sub(r"[^\d.]", "", str(item.get("years_required", 0))) or 0)))
+        except Exception:
+            yrs = 0
+        yrs = max(0, min(40, yrs))
         emp = str(item.get("employment_type", "Unclear")).strip()
         emp_map = {e.lower().replace("-", "").replace(" ", ""): e for e in EMPLOYMENT_VALUES}
         emp = emp_map.get(emp.lower().replace("-", "").replace(" ", ""), "Unclear")
@@ -188,6 +197,7 @@ class ClaudeAnalyzer:
         return {
             "index": idx,
             "match_percent": mp,
+            "years_required": yrs,
             "missing_skills": str(ms or "").strip(),
             "employment_type": emp,
             "visa_status": visa,
@@ -219,6 +229,7 @@ class ClaudeAnalyzer:
                 missing += 1
                 continue
             job.match_percent = r["match_percent"]
+            job.years_required = r["years_required"]
             job.missing_skills = r["missing_skills"]
             job.employment_type = r["employment_type"]
             job.visa_status = r["visa_status"]

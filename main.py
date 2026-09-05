@@ -65,6 +65,7 @@ def main(argv=None) -> int:
     http = HttpClient(cfg.get("http"))
     a_cfg = cfg.get("analysis", {})
     min_match = int(a_cfg.get("min_match_percent", 80))
+    max_years = int(a_cfg.get("max_years_required", 0) or 0)   # 0 disables the experience cap
     stats: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
     source_errors: dict[str, str] = {}
 
@@ -140,6 +141,10 @@ def main(argv=None) -> int:
                 s["dropped_visa"] += 1
                 log.debug("drop visa %r", job.title)
                 continue
+            if max_years and job.years_required > max_years:
+                s["dropped_experience"] += 1
+                log.debug("drop experience %d yrs %r", job.years_required, job.title)
+                continue
             kept.append(job)
     else:
         log.info("no new candidates - skipping analysis")
@@ -167,9 +172,9 @@ def main(argv=None) -> int:
     for src in sources:
         s = stats[src.name]
         log.info(
-            "SUMMARY source=%s found=%d new=%d dropped_low_match=%d dropped_visa=%d dropped_unanalyzed=%d written=%d%s",
-            src.name, s["found"], s["new"], s["dropped_low_match"], s["dropped_visa"], s["dropped_unanalyzed"],
-            s["written"], f" error={source_errors[src.name]!r}" if src.name in source_errors else "",
+            "SUMMARY source=%s found=%d new=%d dropped_low_match=%d dropped_visa=%d dropped_experience=%d dropped_unanalyzed=%d written=%d%s",
+            src.name, s["found"], s["new"], s["dropped_low_match"], s["dropped_visa"], s["dropped_experience"],
+            s["dropped_unanalyzed"], s["written"], f" error={source_errors[src.name]!r}" if src.name in source_errors else "",
         )
     summary = {
         "dry_run": args.dry_run,

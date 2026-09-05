@@ -13,7 +13,7 @@ import re
 from bs4 import BeautifulSoup
 
 from agent.models import Job
-from agent.textsig import employment_hint, find_rate, visa_hint
+from agent.textsig import employment_hint, find_rate, visa_hint, years_required_hint
 
 from .base import Source
 
@@ -72,6 +72,7 @@ class DiceSource(Source):
         self.max_pages = int(d.get("max_pages", 2))
         self.extra_locations = list(d.get("extra_locations") or [])   # on-site/hybrid markets worth logging
         self.us_only = bool(d.get("us_only", True))
+        self.remote_only = bool(d.get("remote_only", False))
         self.fetch_details = bool(d.get("fetch_details", True))
         self.max_detail_fetches = int(d.get("max_detail_fetches", 60))
 
@@ -154,14 +155,13 @@ class DiceSource(Source):
 
     # ------------------------------------------------------------------ fetch
     def fetch(self) -> list[Job]:
-        remote_only = any(l.strip().lower() == "remote" for l in self.locations)
         raw_by_id: dict[str, dict] = {}
-        queries = [(kw, remote_only, "") for kw in self.keywords]
+        queries = [(kw, self.remote_only, "") for kw in self.keywords]
         queries += [(kw, False, loc) for kw in self.keywords for loc in self.extra_locations]
         for kw, remote, loc in queries:
             try:
                 rows = self._search(kw, remote_only=remote, location=loc)
-                self.log.info("keyword=%r %s results=%d", kw, f"location={loc!r}" if loc else "remote", len(rows))
+                self.log.info("keyword=%r %s results=%d", kw, f"location={loc!r}" if loc else ("remote" if remote else "nationwide"), len(rows))
             except Exception as exc:  # per-query fail-soft
                 self.log.error("search failed for %r (%s): %s", kw, loc or "remote", exc)
                 continue
@@ -214,6 +214,7 @@ class DiceSource(Source):
                     source=self.name,
                     employment_hint=employment_hint(blob) or ("Contract (type unclear)" if "CONTRACT" in etypes.upper() else ""),
                     visa_hint=visa_hint(blob),
+                    years_hint=years_required_hint(desc),
                     posted_at=str(r.get("postedDate") or r.get("modifiedDate") or ""),
                     extra={"dice_id": jid, "employerType": r.get("employerType", "")},
                 ).clean()
