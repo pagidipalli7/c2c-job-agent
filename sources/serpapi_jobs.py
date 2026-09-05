@@ -22,6 +22,7 @@ class SerpApiSource(Source):
         self.location = s.get("location", "United States")
         self.remote_only = bool(s.get("remote_only", True))
         self.max_per_keyword = int(s.get("max_per_keyword", 20))
+        self.date_posted = s.get("date_posted", "today")   # today | 3days | week | month | "" (any)
 
     def fetch(self) -> list[Job]:
         if not self.api_key:
@@ -40,6 +41,8 @@ class SerpApiSource(Source):
             }
             if self.remote_only:
                 params["ltype"] = "1"
+            if self.date_posted:
+                params["chips"] = f"date_posted:{self.date_posted}"
             try:
                 data = self.http.get_json(SERP_URL, params=params)
             except Exception as exc:

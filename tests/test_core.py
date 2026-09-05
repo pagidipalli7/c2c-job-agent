@@ -250,3 +250,48 @@ class TestGmailParser(unittest.TestCase):
         self.assertIn("$70", job.rate)
         self.assertEqual(job.employment_hint, "C2C")
         self.assertEqual(len(job.job_id), 40)                                # no URL -> sha1 fallback
+
+
+class TestSheetWriter(unittest.TestCase):
+    def _writer(self):
+        from agent.sheet import SheetWriter
+        return SheetWriter({"timezone": "America/Chicago", "daily_tabs": True,
+                            "time_format": "%Y-%m-%d %I:%M %p %Z", "tab_name_format": "%Y-%m-%d"})
+
+    def test_central_time_and_tab_name(self):
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+        w = self._writer()
+        # 2026-01-15 18:05 UTC == 12:05 PM CST; 2026-07-15 18:05 UTC == 01:05 PM CDT
+        j = Job(title="T", company="C", location="L", url="https://x.com/1")
+        winter = datetime(2026, 1, 15, 18, 5, tzinfo=ZoneInfo("UTC")).astimezone(w.tz)
+        summer = datetime(2026, 7, 15, 18, 5, tzinfo=ZoneInfo("UTC")).astimezone(w.tz)
+        self.assertEqual(w.row(j, winter)[0], "2026-01-15 12:05 PM CST")
+        self.assertEqual(w.row(j, summer)[0], "2026-07-15 01:05 PM CDT")
+        self.assertEqual(winter.strftime(w.tab_name_format), "2026-01-15")
+        self.assertRegex(w.today_tab_name(), r"^\d{4}-\d{2}-\d{2}$")
+
+    def test_col_letter(self):
+        from agent.sheet import _col_letter
+        self.assertEqual([_col_letter(i) for i in (1, 2, 26, 27, 28)], ["A", "B", "Z", "AA", "AB"])
+
+    def test_existing_ids_span_all_tabs(self):
+        w = self._writer()
+
+        class WS:
+            def __init__(self, title): self.title = title
+
+        class SH:
+            def worksheets(self): return [WS("2026-09-04"), WS("2026-09-05"), WS("Notes")]
+            def values_batch_get(self, ranges):
+                if ranges[0].endswith("!1:1"):
+                    return {"valueRanges": [
+                        {"values": [["date_found", "job_id", "title"]]},
+                        {"values": [["date_found", "job_id", "title"]]},
+                        {"values": [["just", "notes"]]},
+                    ]}
+                assert ranges == ["'2026-09-04'!B2:B", "'2026-09-05'!B2:B"], ranges
+                return {"valueRanges": [{"values": [["id-a"], ["id-b"]]}, {"values": [["id-c"], [""]]}]}
+
+        w._sh = SH()
+        self.assertEqual(w.existing_job_ids(), {"id-a", "id-b", "id-c"})

@@ -25,7 +25,7 @@ from agent.config import load_config, load_profile  # noqa: E402
 from agent.dedupe import Deduper  # noqa: E402
 from agent.http import HttpClient  # noqa: E402
 from agent.models import Job  # noqa: E402
-from agent.sheet import SheetWriter, job_row  # noqa: E402
+from agent.sheet import SheetWriter  # noqa: E402
 from sources import build_sources  # noqa: E402
 
 log = logging.getLogger("run")
@@ -152,10 +152,12 @@ def main(argv=None) -> int:
     # ---- 5. write / print --------------------------------------------------------
     columns = sheet.columns
     if args.dry_run:
-        print("\n=== DRY RUN: %d row(s) that would be written ===" % len(kept))
+        tab = sheet.today_tab_name() if sheet.daily_tabs else (sheet.worksheet_name or "sheet1")
+        print("\n=== DRY RUN: %d row(s) that would be written to tab %r ===" % (len(kept), tab))
         print("\t".join(columns))
+        now = sheet.now()
         for job in kept:
-            print("\t".join(str(v) for v in job_row(job, columns)))
+            print("\t".join(str(v) for v in sheet.row(job, now)))
         print("=== end ===\n")
         for job in kept:
             stats[job.source]["would_write"] += 1

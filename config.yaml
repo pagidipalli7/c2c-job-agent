@@ -104,6 +104,7 @@ serpapi:
   location: "United States"
   remote_only: false          # nationwide
   max_per_keyword: 20
+  date_posted: today          # Google Jobs date chip: today | 3days | week | month
 
 # ---- Claude analysis ----------------------------------------------------------
 analysis:
@@ -116,7 +117,11 @@ analysis:
 
 # ---- Google Sheet -------------------------------------------------------------
 sheet:
-  worksheet: ""
+  timezone: "America/Chicago"   # date_found timestamps + daily tab names (CST/CDT)
+  time_format: "%Y-%m-%d %I:%M %p %Z"
+  daily_tabs: true              # one worksheet per day, named with the date below; dedupe spans all tabs
+  tab_name_format: "%Y-%m-%d"
+  worksheet: ""                 # only used when daily_tabs is false (empty = first sheet)
   columns:
     - date_found
     - job_id

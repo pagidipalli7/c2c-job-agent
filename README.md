@@ -98,8 +98,17 @@ citizenship-only language, regardless of the model's answer.
 `job_id` = normalised URL (lower-cased host, tracking params and fragment removed) when a URL exists,
 otherwise `sha1(lower(company + title + location))`.
 
-## Sheet columns
+## Sheet layout
 
+* **One tab per day**, named with the Central-time date (`2026-09-05`), created automatically by the first run
+  that has something to write. Header row is bold and frozen. Set `sheet.daily_tabs: false` for a single fixed tab.
+* `date_found` is Central time, e.g. `2026-09-05 03:41 PM CDT` (`CST` in winter). Change `sheet.timezone` /
+  `sheet.time_format` to taste.
+* Dedupe reads the `job_id` column of **every** tab (two batched API calls), so a job never repeats across days.
+* Only fresh postings are considered: Dice and LinkedIn last 24 h, Adzuna `max_days_old: 1`, Google Jobs
+  `date_posted: today`, Gmail last 3 h. Combined with dedupe, each job is written once, on the day it is first seen.
+
+Columns:
 `date_found | job_id | title | company | location | rate | employment_type | contact_email | match_percent | missing_skills | visa_status | source | url`
 
 ## Logging
