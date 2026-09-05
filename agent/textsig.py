@@ -89,6 +89,7 @@ _YEARS = re.compile(
     re.I,
 )
 _YEARS_CONTEXT = re.compile(r"(experience|exp\b|hands[-\s]on|minimum|at least|required|overall|total|working)", re.I)
+_YEARS_EXCLUDE = re.compile(r"(years?\s*(of\s*)?(age|old)|\bage\b|old\b|ago\b|founded|established|anniversary|history|warranty|contract\s*(term|length)|duration)", re.I)
 
 
 def years_required_hint(text: str) -> int:
@@ -97,7 +98,7 @@ def years_required_hint(text: str) -> int:
     best = 0
     for m in _YEARS.finditer(text or ""):
         window = (text or "")[max(0, m.start() - 60): m.end() + 60]
-        if not _YEARS_CONTEXT.search(window):
+        if not _YEARS_CONTEXT.search(window) or _YEARS_EXCLUDE.search((text or "")[m.start(): m.end() + 12]):
             continue
         try:
             n = int(m.group(1))

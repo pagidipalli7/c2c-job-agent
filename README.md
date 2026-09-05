@@ -1,7 +1,8 @@
 # C2C Job Agent
 
 Automated contract-job aggregator that runs every 2 hours on GitHub Actions, pulls new **Power Platform**
-postings from **Dice**, **LinkedIn (public guest search)**, **Adzuna**, keyless remote boards
+postings from **Dice**, **LinkedIn (public guest search)**, **~30 company career pages** (Accenture, PwC,
+Booz Allen, Kyndryl, Leidos, GDIT, Salesforce, Nvidia, Adobe, Amazon, Databricks, HSO ...), **Adzuna**, keyless remote boards
 (**Remotive / RemoteOK / Jobicy**), **Gmail (recruiter/vendor emails)** and optionally **SerpAPI Google Jobs**,
 scores every job against `profile.md` with **Claude Haiku** in one batched call, and appends the matches to a
 **Google Sheet**. Location scope is anywhere in the USA.
@@ -20,6 +21,7 @@ sources/*  ──fetch()──▶  dedupe (sheet + in-run)  ──▶  Claude (1
 | `profile.md` | Candidate profile the scorer reads (edit freely; it is sent verbatim to Claude) |
 | `sources/dice.py` | Parses dice.com search results (server-rendered payload) + job-detail JSON-LD |
 | `sources/linkedin.py` | LinkedIn guest job search (no login) + guest posting detail for descriptions |
+| `sources/careers.py` | Company career pages via ATS JSON APIs: Workday (16 companies), Greenhouse (9), Lever (3), Amazon |
 | `sources/adzuna.py` | Adzuna official API; skipped when `ADZUNA_APP_ID`/`ADZUNA_APP_KEY` are unset |
 | `sources/remoteboards.py` | Remotive, RemoteOK, Jobicy JSON feeds with strict title matching |
 | `sources/gmail_imap.py` | IMAP scan of the last N hours for vendor requirement emails |
@@ -130,5 +132,8 @@ Exit codes: `0` ok, `2` sheet unavailable (non-dry-run), `3` Claude analysis fai
 * Dice: `posted_within` (`ONE`/`THREE`/`SEVEN`), `employment_types`, `remote_only`, `extra_locations`, `max_detail_fetches`.
 * LinkedIn: `posted_within_seconds`, `job_types` (`C` contract, `T` temporary, `F` full-time), `max_pages`, `request_delay_seconds`.
 * Remote boards: `title_terms` (strict title/tag match), `us_locations_only`.
+* Career pages: `careers.workday` / `greenhouse` / `lever` company lists, `queries`, `title_terms`, `max_days_old`.
+  To add a Workday company, copy `tenant`, `wd` and `site` from its URL `https://<tenant>.<wd>.myworkdayjobs.com/<site>/`.
+  Microsoft, Google, Meta and Apple have no stable public job API; their postings arrive via LinkedIn (and Google Jobs when a SerpAPI key is set).
 * Experience cap: `analysis.max_years_required` (0 disables).
 * Analysis: `analysis.model`, `description_chars` (per-job truncation), `min_match_percent`.

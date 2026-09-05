@@ -54,6 +54,7 @@ class TestYearsHint(unittest.TestCase):
         self.assertEqual(years_required_hint("5-7 years hands-on Power Automate experience required"), 5)
         self.assertEqual(years_required_hint("Founded 20 years ago; contract 6 months"), 0)
         self.assertEqual(years_required_hint("Great Power BI role, no years stated"), 0)
+        self.assertEqual(years_required_hint("Must be 18 years of age or older. 3+ years of experience required."), 3)
 
 
 class TestLinkedInParser(unittest.TestCase):
@@ -295,3 +296,21 @@ class TestSheetWriter(unittest.TestCase):
 
         w._sh = SH()
         self.assertEqual(w.existing_job_ids(), {"id-a", "id-b", "id-c"})
+
+
+class TestCareers(unittest.TestCase):
+    def test_workday_days(self):
+        from sources.careers import _workday_days
+        self.assertEqual([_workday_days(x) for x in ("Posted Today", "Posted Yesterday", "Posted 6 Days Ago", "Posted 30+ Days Ago", "")],
+                         [0, 1, 6, 30, None])
+
+    def test_title_match_and_us_filter(self):
+        from agent.config import load_config
+        from sources.careers import CareersSource
+        src = CareersSource(load_config(), http=None)
+        self.assertTrue(src._match("Power Platform Developer", ""))
+        self.assertTrue(src._match("Solutions Engineer", "Experience with Dataverse and Power Automate"))
+        self.assertFalse(src._match("Senior Power Integrity Engineer", "hardware power delivery"))
+        self.assertTrue(src._us("McLean, VA"))
+        self.assertTrue(src._us("US - Remote"))
+        self.assertFalse(src._us("Bangalore, Karnataka, India"))

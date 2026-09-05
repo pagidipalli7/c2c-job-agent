@@ -5,6 +5,7 @@ from typing import Type
 
 from .adzuna import AdzunaSource
 from .base import Source
+from .careers import CareersSource
 from .dice import DiceSource
 from .gmail_imap import GmailSource
 from .linkedin import LinkedInSource
@@ -14,6 +15,7 @@ from .serpapi_jobs import SerpApiSource
 REGISTRY: dict[str, Type[Source]] = {
     DiceSource.name: DiceSource,
     LinkedInSource.name: LinkedInSource,
+    CareersSource.name: CareersSource,
     AdzunaSource.name: AdzunaSource,
     RemoteBoardsSource.name: RemoteBoardsSource,
     GmailSource.name: GmailSource,

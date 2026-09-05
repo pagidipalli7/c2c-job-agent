@@ -15,7 +15,7 @@ locations:
 
 # ---- Sources (order = run order). Disable by removing from the list. ----------
 sources:
-  enabled: [dice, linkedin, adzuna, remoteboards, gmail, serpapi]
+  enabled: [dice, linkedin, careers, adzuna, remoteboards, gmail, serpapi]
 
 dice:
   max_pages: 2                # 30 results per page per query
@@ -58,6 +58,57 @@ remoteboards:
     - dynamics 365
     - power pages
   us_locations_only: true
+
+careers:
+  # Company career pages through their ATS public JSON APIs (no keys). Each entry was verified live;
+  # add more Workday tenants as {name, tenant, wd, site} taken from the company's myworkdayjobs.com URL:
+  #   https://<tenant>.<wd>.myworkdayjobs.com/<site>/...
+  queries: ["Power Platform", "Power Apps", "Power Automate", "Power BI", "Dynamics 365"]
+  title_terms:
+    - power platform
+    - power apps
+    - powerapps
+    - power automate
+    - power bi
+    - dataverse
+    - dynamics 365
+    - dynamics crm
+    - power pages
+  max_days_old: 2             # Workday reports whole days ("Posted Yesterday"); dedupe prevents repeats
+  us_only: true
+  max_detail_fetches: 40
+  amazon: true
+  workday:
+    - {name: "Accenture",            tenant: accenture, wd: wd103, site: AccentureCareers}
+    - {name: "PwC",                  tenant: pwc,       wd: wd3,   site: Global_Experienced_Careers}
+    - {name: "Booz Allen Hamilton",  tenant: bah,       wd: wd1,   site: BAH_Jobs}
+    - {name: "Kyndryl",              tenant: kyndryl,   wd: wd5,   site: KyndrylProfessionalCareers}
+    - {name: "Leidos",               tenant: leidos,    wd: wd5,   site: External}
+    - {name: "GDIT",                 tenant: gdit,      wd: wd5,   site: External_Career_Site}
+    - {name: "ICF",                  tenant: icf,       wd: wd5,   site: ICFExternal_Career_Site}
+    - {name: "Guidehouse",           tenant: guidehouse, wd: wd1,  site: External}
+    - {name: "Salesforce",           tenant: salesforce, wd: wd12, site: External_Career_Site}
+    - {name: "Nvidia",               tenant: nvidia,    wd: wd5,   site: NVIDIAExternalCareerSite}
+    - {name: "Adobe",                tenant: adobe,     wd: wd5,   site: external_experienced}
+    - {name: "Workday",              tenant: workday,   wd: wd5,   site: Workday}
+    - {name: "AT&T",                 tenant: att,       wd: wd1,   site: ATTGeneral}
+    - {name: "Target",               tenant: target,    wd: wd5,   site: targetcareers}
+    - {name: "The Home Depot",       tenant: homedepot, wd: wd5,   site: CareerDepot}
+    - {name: "3M",                   tenant: 3m,        wd: wd1,   site: Search}
+  greenhouse:
+    - {name: "Databricks", token: databricks}
+    - {name: "Stripe",     token: stripe}
+    - {name: "Airbnb",     token: airbnb}
+    - {name: "Coinbase",   token: coinbase}
+    - {name: "Cloudflare", token: cloudflare}
+    - {name: "Dropbox",    token: dropbox}
+    - {name: "Figma",      token: figma}
+    - {name: "Twilio",     token: twilio}
+    - {name: "Okta",       token: okta}
+  lever:
+    - {name: "HSO (Microsoft Dynamics partner)",        token: hso}
+    - {name: "MCA Connect (Microsoft Dynamics partner)", token: mcaconnect}
+    - {name: "Palantir",                                token: palantir}
 
 gmail:
   imap_host: imap.gmail.com
