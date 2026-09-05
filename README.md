@@ -61,7 +61,7 @@ Create an API key at https://console.anthropic.com. Optional: https://serpapi.co
 
 ### 4. GitHub Actions
 Push this folder to a repo → **Settings → Secrets and variables → Actions** → add the secrets above.
-The workflow runs every 2 hours at 01,03,...,23 UTC (even hours Central Daylight Time: 12 AM, 2 AM ... 10 PM CDT;
+The workflow runs every 2 hours at 01:07, 03:07 ... 23:07 UTC (even hours Central Daylight Time: 12:07 AM, 2:07 AM ... 10:07 PM CDT;
 odd hours during Central Standard Time) and can be triggered manually
 (**Actions → C2C Job Agent → Run workflow**, optional *dry_run* checkbox).
 

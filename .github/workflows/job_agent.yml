@@ -2,9 +2,10 @@ name: C2C Job Agent
 
 on:
   schedule:
-    # Every 2 hours at 01,03,...,23 UTC = 8 PM, 10 PM, 12 AM ... 6 PM Central Daylight Time (even hours CDT).
+    # Every 2 hours at 01:07, 03:07 ... 23:07 UTC = 8:07 PM, 10:07 PM ... 6:07 PM Central Daylight Time.
+    # Minute 7 avoids GitHub's top-of-the-hour scheduler congestion, which delays or skips :00 crons.
     # GitHub cron is UTC only; during Central Standard Time (Nov-Mar) runs land on odd Central hours.
-    - cron: "0 1-23/2 * * *"
+    - cron: "7 1-23/2 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
