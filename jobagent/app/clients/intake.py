@@ -87,8 +87,12 @@ def upsert_client(session: Session, doc: dict) -> Client:
         )
         session.add(client)
         session.flush()  # need id for alias
-        client.alias_email = f"client{client.id}@{settings.apply_domain}"
+        client.alias_email = str(intake.alias_email) if intake.alias_email else f"client{client.id}@{settings.apply_domain}"
     else:
+        if intake.alias_email:
+            client.alias_email = str(intake.alias_email)
+        elif client.alias_email and "@" + settings.apply_domain not in client.alias_email:
+            client.alias_email = f"client{client.id}@{settings.apply_domain}"  # override removed -> back to the managed alias
         client.name = intake.name
         client.phone = intake.phone
         client.timezone = intake.timezone

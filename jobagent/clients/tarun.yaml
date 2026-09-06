@@ -3,6 +3,9 @@
 # file and the tailoring validator never lets a submission drift from it.
 name: Tarun Kumar
 real_email: tarunkpp7@gmail.com
+# Until an APPLY_DOMAIN with inbound routing exists, apply with the real inbox so confirmations and recruiter
+# replies arrive. Remove this line once the domain is set up and the managed alias takes over.
+alias_email: tarunkpp7@gmail.com
 phone: "+1 469 449 1959"
 timezone: America/Chicago
 resume_template: classic

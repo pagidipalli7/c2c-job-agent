@@ -121,6 +121,7 @@ class ClientIntake(BaseModel):
 
     name: str
     real_email: EmailStr
+    alias_email: EmailStr | None = None  # override the client{id}@APPLY_DOMAIN alias (e.g. use the real inbox until a domain exists)
     phone: str | None = None
     timezone: str = "America/Chicago"
     resume_template: Literal["classic", "modern"] = "classic"

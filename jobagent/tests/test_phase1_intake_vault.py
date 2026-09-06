@@ -129,3 +129,15 @@ def test_get_or_create_account_is_idempotent_and_encrypted(seed_clients, db):
     _, pw3 = get_or_create_account(db, client, "workday", "other")
     assert pw3 != pw
     assert len(db.scalars(select(ATSAccount)).all()) == 2
+
+
+def test_alias_override_and_revert(db):
+    d = copy.deepcopy(_doc())
+    d["alias_email"] = "alex.real@example.com"
+    c = upsert_client(db, d)
+    db.commit()
+    assert c.alias_email == "alex.real@example.com"
+    d.pop("alias_email")
+    upsert_client(db, d)
+    db.commit()
+    assert c.alias_email == f"client{c.id}@apply.test"
