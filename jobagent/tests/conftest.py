@@ -11,6 +11,11 @@ os.environ["LLM_MODE"] = "mock"
 os.environ["MAIL_WEBHOOK_SECRET"] = "test-secret"
 os.environ["APPLY_DOMAIN"] = "apply.test"
 os.environ["MAIL_PROVIDER"] = "log"
+import pathlib as _pl
+
+_chrome = _pl.Path("/opt/pw-browsers/chromium-1194/chrome-linux/chrome")
+if _chrome.exists() and not os.environ.get("CHROMIUM_EXECUTABLE"):
+    os.environ["CHROMIUM_EXECUTABLE"] = str(_chrome)
 
 import pytest  # noqa: E402
 

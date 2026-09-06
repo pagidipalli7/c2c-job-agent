@@ -30,7 +30,10 @@ async def browser_page(client_id: int | None = None, headless: bool | None = Non
 
     settings = get_settings()
     async with async_playwright() as pw:
-        browser = await pw.chromium.launch(headless=settings.headless if headless is None else headless, proxy=proxy_for_client(client_id))
+        launch_kwargs: dict = {"headless": settings.headless if headless is None else headless, "proxy": proxy_for_client(client_id)}
+        if settings.chromium_executable:
+            launch_kwargs["executable_path"] = settings.chromium_executable
+        browser = await pw.chromium.launch(**launch_kwargs)
         context = await browser.new_context(
             viewport={"width": 1366, "height": 900},
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
@@ -47,12 +50,16 @@ async def browser_page(client_id: int | None = None, headless: bool | None = Non
 
 
 async def human_type(locator, text: str, min_ms: int = 50, max_ms: int = 150) -> None:
-    """Type with per-character delay (50-150ms) like a person would."""
+    """Type with per-character delay (50-150ms) like a person would. Long text (> 120 chars) is pasted."""
     await locator.click()
     try:
         await locator.fill("")
     except Exception:  # noqa: BLE001 - some inputs reject fill; just type
         pass
+    if len(text) > 120:
+        await locator.fill(text)
+        await asyncio.sleep(random.uniform(0.3, 0.8))
+        return
     for ch in text:
         await locator.type(ch, delay=0)
         await asyncio.sleep(random.uniform(min_ms, max_ms) / 1000.0)
@@ -74,5 +81,7 @@ async def snap(page, session: Session | None, application_id: int, step: str, fu
         return ""
     if session is not None:
         session.add(Screenshot(application_id=application_id, step=step, path=str(path)))
-        session.flush()
+        # commit right away: proof-of-work survives a crash, and the SQLite write lock is released so the
+        # inbound-mail webhook (separate process) can fulfil OTP sessions while we wait
+        session.commit()
     return str(path)

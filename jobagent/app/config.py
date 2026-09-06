@@ -63,6 +63,7 @@ class Settings(BaseSettings):
     otp_wait_seconds: int = 120
     otp_session_ttl_seconds: int = 180
     headless: bool = True
+    chromium_executable: str | None = None  # e.g. /opt/pw-browsers/chromium-1194/chrome-linux/chrome when the bundled build is missing
 
     @property
     def effective_llm_mode(self) -> str:

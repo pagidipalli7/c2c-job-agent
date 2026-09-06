@@ -1,0 +1,136 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Fake Workday</title>
+<style>body{font-family:sans-serif;max-width:800px;margin:1rem auto}.page{display:none}.page.active{display:block}label{display:block;margin-top:.5rem}[data-automation-id="errorMessage"]{color:#b00}.modal{border:1px solid #999;padding:1rem;margin:1rem 0}</style></head>
+<body>
+<div id="job" class="page active"><h1>Data Engineer - Remote</h1><p>Great job at Acme.</p>
+  <a href="#" data-automation-id="adventureButton">Apply</a>
+  <div id="modal" class="modal" style="display:none"><a href="#" data-automation-id="applyManually">Apply Manually</a> <a href="#" data-automation-id="autofillWithResume">Autofill with Resume</a></div></div>
+
+<div id="auth" class="page"><h2>Create Account</h2><p>Sign in or create account. You will need to verify your email.</p>
+  <label>Email Address <input data-automation-id="email"></label>
+  <label>Password <input type="password" data-automation-id="password"></label>
+  <label>Verify New Password <input type="password" data-automation-id="verifyPassword"></label>
+  <label><input type="checkbox" data-automation-id="createAccountCheckbox"> I have read and consent to the terms</label>
+  <div data-automation-id="errorMessage"></div>
+  <button data-automation-id="createAccountSubmitButton">Create Account</button>
+  <button data-automation-id="signInLink">Sign In</button></div>
+
+<div id="otp" class="page"><h2>Verify your email</h2><p>We sent a verification code to your email. Enter it below.</p>
+  <label>Verification code <input data-automation-id="verificationCode"></label>
+  <div data-automation-id="errorMessage"></div>
+  <button data-automation-id="verifyButton">Verify</button></div>
+
+<div id="myinfo" class="page"><div data-automation-id="progressBar">1 My Information (current) · 2 My Experience · 3 Application Questions · 4 Voluntary Disclosures · 5 Self Identify · 6 Review</div>
+  <h2>My Information</h2>
+  <label>How Did You Hear About Us? <button data-automation-id="sourceSection" aria-haspopup="listbox">Select One</button></label>
+  <fieldset><legend>Have you previously worked for Acme?*</legend><label><input type="radio" data-automation-id="previousWorker" name="prev" value="true">Yes</label><label><input type="radio" data-automation-id="previousWorker" name="prev" value="false">No</label></fieldset>
+  <label>Country <select data-automation-id="countryDropdown"><option>Select One</option><option>United States</option><option>Canada</option></select></label>
+  <label>First Name* <input data-automation-id="legalNameSection_firstName"></label>
+  <label>Last Name* <input data-automation-id="legalNameSection_lastName"></label>
+  <label>Address Line 1 <input data-automation-id="addressSection_addressLine1"></label>
+  <label>City <input data-automation-id="addressSection_city"></label>
+  <label>State <select data-automation-id="addressSection_countryRegion"><option>Select One</option><option>Texas</option><option>California</option></select></label>
+  <label>Postal Code <input data-automation-id="addressSection_postalCode"></label>
+  <label>Phone Device Type* <select data-automation-id="phone-device-type"><option>Select One</option><option>Mobile</option><option>Home</option></select></label>
+  <label>Phone Number* <input data-automation-id="phone-number"></label>
+  <div data-automation-id="errorMessage"></div>
+  <button data-automation-id="bottom-navigation-next-button">Save and Continue</button></div>
+
+<div id="exp" class="page"><div data-automation-id="progressBar">1 My Information · 2 My Experience (current) · 3 Application Questions · 4 Voluntary Disclosures · 5 Self Identify · 6 Review</div>
+  <h2>My Experience</h2>
+  <div data-automation-id="workExperienceSection"><h3>Work Experience</h3><div id="work-list"></div><button data-automation-id="Add">Add</button></div>
+  <div data-automation-id="educationSection"><h3>Education</h3><div id="edu-list"></div><button data-automation-id="Add">Add</button></div>
+  <label>Resume/CV* <input type="file" data-automation-id="file-upload-input-ref"></label>
+  <label>LinkedIn <input data-automation-id="linkedinQuestion"></label>
+  <label>Website <input data-automation-id="website"></label>
+  <div data-automation-id="errorMessage"></div>
+  <button data-automation-id="bottom-navigation-next-button">Save and Continue</button></div>
+
+<div id="questions" class="page"><div data-automation-id="progressBar">1 My Information · 2 My Experience · 3 Application Questions (current) · 4 Voluntary Disclosures · 5 Self Identify · 6 Review</div>
+  <h2>Application Questions</h2>
+  <div data-automation-id="formField-q1"><label for="q1">Are you legally authorized to work in the United States?*</label><select id="q1"><option>Select One</option><option>Yes</option><option>No</option></select></div>
+  <div data-automation-id="formField-q2"><legend>Will you now or in the future require sponsorship?*</legend><label for="q2y"><input type="radio" id="q2y" name="q2" value="yes">Yes</label><label for="q2n"><input type="radio" id="q2n" name="q2" value="no">No</label></div>
+  <div data-automation-id="formField-q3"><label for="q3">Why do you want to work at Acme?*</label><textarea id="q3"></textarea></div>
+  <div data-automation-id="formField-q4"><label for="q4">Are you comfortable working remotely?</label><select id="q4"><option>Select One</option><option>Yes</option><option>No</option></select></div>
+  <div id="salary-q" data-automation-id="formField-q5" style="display:none"><label for="q5">What are your salary expectations?*</label><input id="q5"></div>
+  <div data-automation-id="errorMessage"></div>
+  <button data-automation-id="bottom-navigation-next-button">Save and Continue</button></div>
+
+<div id="disc" class="page"><div data-automation-id="progressBar">... 4 Voluntary Disclosures (current) ...</div><h2>Voluntary Disclosures</h2>
+  <label>Gender <select data-automation-id="gender"><option>Select One</option><option>Male</option><option>Female</option><option>I do not wish to answer</option></select></label>
+  <label>Hispanic or Latino? <select data-automation-id="hispanicOrLatino"><option>Select One</option><option>Yes</option><option>No</option><option>I do not wish to answer</option></select></label>
+  <label>Ethnicity <select data-automation-id="ethnicity"><option>Select One</option><option>Asian</option><option>White</option><option>I do not wish to answer</option></select></label>
+  <label>Veteran Status <select data-automation-id="veteranStatus"><option>Select One</option><option>I am not a protected veteran</option><option>I identify as a protected veteran</option><option>I do not wish to answer</option></select></label>
+  <label><input type="checkbox" data-automation-id="agreementCheckbox"> I have read and accept the terms and conditions*</label>
+  <div data-automation-id="errorMessage"></div>
+  <button data-automation-id="bottom-navigation-next-button">Save and Continue</button></div>
+
+<div id="self" class="page"><div data-automation-id="progressBar">... 5 Self Identify (current) ...</div><h2>Voluntary Self-Identification of Disability</h2>
+  <div data-automation-id="disabilityStatus"><label for="d1"><input type="checkbox" id="d1" value="yes">Yes, I have a disability</label><label for="d2"><input type="checkbox" id="d2" value="no">No, I do not have a disability</label><label for="d3"><input type="checkbox" id="d3" value="decline">I do not want to answer</label></div>
+  <label>Name* <input data-automation-id="name"></label>
+  <label>Date <input data-automation-id="dateSignedOn-dateSectionMonth-input" size=2> / <input data-automation-id="dateSignedOn-dateSectionDay-input" size=2> / <input data-automation-id="dateSignedOn-dateSectionYear-input" size=4></label>
+  <div data-automation-id="errorMessage"></div>
+  <button data-automation-id="bottom-navigation-next-button">Save and Continue</button></div>
+
+<div id="review" class="page"><div data-automation-id="progressBar">... 6 Review (current)</div><h2>Review</h2><pre id="summary"></pre>
+  <button data-automation-id="bottom-navigation-next-button">Submit</button></div>
+
+<div id="done" class="page"><h2>Congratulations!</h2><p>Your application has been submitted. Thank you for applying to Acme.</p></div>
+
+<script>
+const OTP = "135790";
+const state = {work: [], edu: []};
+const q = s => document.querySelector(s);
+const show = id => { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); q('#'+id).classList.add('active'); window.scrollTo(0,0); };
+const err = (page, msg) => { q('#'+page+' [data-automation-id="errorMessage"]').textContent = msg; };
+if (location.search.includes('salary=1')) q('#salary-q').style.display = 'block';
+q('[data-automation-id="adventureButton"]').onclick = e => { e.preventDefault(); q('#modal').style.display = 'block'; };
+q('[data-automation-id="applyManually"]').onclick = e => { e.preventDefault(); show('auth'); };
+q('[data-automation-id="createAccountSubmitButton"]').onclick = () => {
+  const em = q('[data-automation-id="email"]').value, pw = q('[data-automation-id="password"]').value, v = q('[data-automation-id="verifyPassword"]').value;
+  if (!em.includes('@')) return err('auth', 'Enter a valid email');
+  if (pw.length < 8 || pw !== v) return err('auth', 'Passwords must match and be 8+ chars');
+  if (!q('[data-automation-id="createAccountCheckbox"]').checked) return err('auth', 'You must accept the terms');
+  state.email = em; state.password = pw; show('otp');
+};
+q('[data-automation-id="verifyButton"]').onclick = () => { if (q('[data-automation-id="verificationCode"]').value.trim() !== OTP) return err('otp', 'Invalid code'); show('myinfo'); };
+// dropdown button for source
+q('[data-automation-id="sourceSection"]').onclick = e => { e.preventDefault(); let lb = q('#src-lb'); if (!lb) { lb = document.createElement('ul'); lb.id='src-lb'; lb.setAttribute('role','listbox'); ['Company Website','LinkedIn','Referral'].forEach(t => { const li = document.createElement('li'); li.setAttribute('role','option'); li.textContent = t; li.onclick = () => { q('[data-automation-id="sourceSection"]').textContent = t; state.source = t; lb.remove(); }; lb.appendChild(li); }); e.target.after(lb); } };
+q('#myinfo [data-automation-id="bottom-navigation-next-button"]').onclick = () => {
+  const f = q('[data-automation-id="legalNameSection_firstName"]').value, l = q('[data-automation-id="legalNameSection_lastName"]').value, p = q('[data-automation-id="phone-number"]').value;
+  if (!f || !l) return err('myinfo', 'First and last name are required');
+  if (!p) return err('myinfo', 'Phone number is required');
+  if (!document.querySelector('[data-automation-id="previousWorker"]:checked')) return err('myinfo', 'Answer previous worker');
+  Object.assign(state, {first: f, last: l, phone: p, city: q('[data-automation-id="addressSection_city"]').value, region: q('[data-automation-id="addressSection_countryRegion"]').value, country: q('[data-automation-id="countryDropdown"]').value, prev: document.querySelector('[data-automation-id="previousWorker"]:checked').value});
+  show('exp');
+};
+const addWork = () => { const i = state.work.length; state.work.push({}); const d = document.createElement('div'); d.setAttribute('data-automation-id', 'workExperience-' + (i+1)); d.innerHTML = `<label>Job Title* <input data-automation-id="jobTitle"></label><label>Company* <input data-automation-id="company"></label><label>Location <input data-automation-id="location"></label><label><input type="checkbox" data-automation-id="currentlyWorkHere"> I currently work here</label><label>From* <input data-automation-id="startDate-dateSectionMonth-input" size=2> <input data-automation-id="startDate-dateSectionYear-input" size=4></label><label>To <input data-automation-id="endDate-dateSectionMonth-input" size=2> <input data-automation-id="endDate-dateSectionYear-input" size=4></label><label>Role Description <textarea data-automation-id="description"></textarea></label>`; q('#work-list').appendChild(d); const btn = q('[data-automation-id="workExperienceSection"] button'); btn.setAttribute('data-automation-id', 'Add Another'); btn.textContent = 'Add Another'; };
+q('[data-automation-id="workExperienceSection"] button').onclick = addWork;
+q('[data-automation-id="educationSection"] button').onclick = () => { const i = state.edu.length; state.edu.push({}); const d = document.createElement('div'); d.setAttribute('data-automation-id', 'education-' + (i+1)); d.innerHTML = `<label>School* <input data-automation-id="school"></label><label>Degree <select data-automation-id="degree"><option>Select One</option><option>Bachelor</option><option>Master</option><option>Doctorate</option></select></label><label>Field of Study <input data-automation-id="fieldOfStudy"></label>`; q('#edu-list').appendChild(d); };
+q('#exp [data-automation-id="bottom-navigation-next-button"]').onclick = () => {
+  const file = q('[data-automation-id="file-upload-input-ref"]').files[0];
+  if (!file) return err('exp', 'Resume is required');
+  const works = [...document.querySelectorAll('[data-automation-id^="workExperience-"]')].map(d => ({title: d.querySelector('[data-automation-id="jobTitle"]').value, company: d.querySelector('[data-automation-id="company"]').value, current: d.querySelector('[data-automation-id="currentlyWorkHere"]').checked, startMonth: d.querySelector('[data-automation-id="startDate-dateSectionMonth-input"]').value, startYear: d.querySelector('[data-automation-id="startDate-dateSectionYear-input"]').value}));
+  if (works.some(w => !w.title || !w.company)) return err('exp', 'Job title and company are required');
+  const edus = [...document.querySelectorAll('[data-automation-id^="education-"]')].map(d => ({school: d.querySelector('[data-automation-id="school"]').value, degree: d.querySelector('[data-automation-id="degree"]').value}));
+  Object.assign(state, {work: works, edu: edus, resume: file.name, resumeSize: file.size, linkedin: q('[data-automation-id="linkedinQuestion"]').value});
+  show('questions');
+};
+q('#questions [data-automation-id="bottom-navigation-next-button"]').onclick = () => {
+  const a = q('#q1').value, s = document.querySelector('input[name=q2]:checked'), w = q('#q3').value;
+  if (a === 'Select One' || !s || !w) return err('questions', 'Please answer all required questions');
+  if (q('#salary-q').style.display !== 'none' && !q('#q5').value) return err('questions', 'Salary expectation is required');
+  Object.assign(state, {authorized: a, sponsorship: s.value, why: w, remote: q('#q4').value, salary: q('#q5').value});
+  show('disc');
+};
+q('#disc [data-automation-id="bottom-navigation-next-button"]').onclick = () => {
+  if (!q('[data-automation-id="agreementCheckbox"]').checked) return err('disc', 'You must accept the terms');
+  Object.assign(state, {gender: q('[data-automation-id="gender"]').value, ethnicity: q('[data-automation-id="ethnicity"]').value, veteran: q('[data-automation-id="veteranStatus"]').value});
+  show('self');
+};
+q('#self [data-automation-id="bottom-navigation-next-button"]').onclick = () => {
+  const c = document.querySelector('[data-automation-id="disabilityStatus"] input:checked');
+  if (!q('[data-automation-id="name"]').value || !c) return err('self', 'Name and a selection are required');
+  state.disability = c.value; q('#summary').textContent = JSON.stringify(state, null, 1); show('review');
+};
+q('#review [data-automation-id="bottom-navigation-next-button"]').onclick = async () => { await fetch('/submit', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(state)}); show('done'); };
+</script></body></html>
