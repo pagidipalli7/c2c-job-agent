@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 
 from app.clients.schemas import ProfileData
 from app.db.models import JobPosting
-from app.llm import LLMError, get_llm, register_mock
+from app.llm import LLMAuthError, LLMError, get_llm, register_mock
 from app.logging import get_logger
 
 log = get_logger("matching.scorer")
@@ -89,6 +89,8 @@ def score_job(profile: ProfileData, job: JobPosting) -> ScoreResult:
     try:
         data = llm.json_call("haiku", SYSTEM, user, purpose="score_job", max_tokens=600)
         return _coerce(data)
+    except LLMAuthError:
+        raise  # a bad key fails every call: abort the run instead of scoring everything 0
     except LLMError as e:
         log.warning("score_failed", job_id=job.id, error=str(e))
         return ScoreResult(score=0, apply=False, reasons=[f"scoring failed: {e}"])

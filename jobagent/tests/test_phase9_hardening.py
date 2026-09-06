@@ -205,3 +205,37 @@ def test_wait_for_value_timeout_when_fulfilled_with_empty_value(db, alex):
     assert asyncio.run(wait_for_value(s.session_id, timeout_seconds=1, poll=0.2)) is None
     db.expire_all()
     assert db.get(OTPSession, s.id).status == "fulfilled"
+
+
+def test_bad_api_key_aborts_matching_instead_of_scoring_zero(db, seed_clients, monkeypatch):
+    from app.llm import LLMAuthError
+    from app.matching import scorer as sc
+    from app.matching.pipeline import match_client
+    from tests.test_phase3_matching import mk_job
+
+    class Bad:
+        def json_call(self, *a, **k):
+            raise LLMAuthError("API key is invalid")
+
+    monkeypatch.setattr(sc, "get_llm", lambda: Bad())
+    alex = seed_clients[0]
+    with pytest.raises(LLMAuthError):
+        match_client(db, alex, [mk_job(db)], dry_run=True)
+
+
+def test_live_client_maps_auth_error(monkeypatch):
+    import anthropic
+    import httpx
+
+    from app.llm.client import LLMAuthError, LLMClient
+
+    c = LLMClient(mode="live")
+
+    class Boom:
+        def create(self, **kw):
+            resp = httpx.Response(401, request=httpx.Request("POST", "https://api.anthropic.com/v1/messages"), json={"error": {"message": "API key is invalid."}})
+            raise anthropic.AuthenticationError("invalid", response=resp, body=None)
+
+    c._client.messages = Boom()
+    with pytest.raises(LLMAuthError):
+        c.complete("haiku", "s", "u", purpose="x")

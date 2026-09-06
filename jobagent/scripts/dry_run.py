@@ -8,6 +8,7 @@ from collections import Counter
 
 from app.db import init_db
 from app.logging import configure_logging
+from app.llm import LLMAuthError
 from app.matching.pipeline import match_all_open
 
 
@@ -23,7 +24,10 @@ def main():
 
     logging.getLogger().setLevel(logging.WARNING)
     init_db()
-    decisions = match_all_open(client_id=args.client, dry_run=not args.commit)
+    try:
+        decisions = match_all_open(client_id=args.client, dry_run=not args.commit)
+    except LLMAuthError as e:
+        raise SystemExit(f"\nSTOPPED: {e}\nFix the key, then re-run. (Set LLM_MODE=mock in .env to use the offline scorer instead.)")
     lines = []
     by_client: dict[str, list] = {}
     for d in decisions:

@@ -13,6 +13,7 @@ from app.clients.schemas import ProfileData
 from app.config import get_settings
 from app.db import session_scope
 from app.db.models import Application, ApplicationEvent, Client, JobPosting
+from app.llm import LLMAuthError
 from app.logging import get_logger
 
 from .dedup import already_applied, company_cooldown_hit, company_key, stagger_schedule
@@ -131,6 +132,8 @@ def match_client(session: Session, client: Client, jobs: list[JobPosting], dry_r
     for job in jobs:
         try:
             decisions.append(evaluate(session, client, profile, job, dry_run=dry_run, scorer=scorer))
+        except LLMAuthError:
+            raise
         except Exception as e:  # noqa: BLE001
             log.exception("match_error", client_id=client.id, job_id=job.id)
             decisions.append(Decision(client_id=client.id, client_name=client.name, job_id=job.id, company=job.company_name, title=job.title, location=job.location, url=job.url, stage="error", decision="skip", reason=str(e)))

@@ -25,6 +25,10 @@ class LLMError(RuntimeError):
     pass
 
 
+class LLMAuthError(LLMError):
+    """401/403 from the API: the key is missing, invalid, revoked, or the account has no billing. Never retry."""
+
+
 def register_mock(purpose: str, handler: MockHandler) -> None:
     """Modules register a deterministic responder per purpose (score_job, tailor_resume, ...)."""
     _mock_handlers[purpose] = handler
@@ -81,6 +85,10 @@ class LLMClient:
             )
         except anthropic.RateLimitError as e:
             raise LLMError(f"rate limited: {e}") from e
+        except anthropic.AuthenticationError as e:
+            raise LLMAuthError(f"Anthropic rejected the API key ({e.status_code}): check ANTHROPIC_API_KEY in .env and billing at console.anthropic.com") from e
+        except anthropic.PermissionDeniedError as e:
+            raise LLMAuthError(f"Anthropic API key lacks permission ({e.status_code}): {e.message}") from e
         except anthropic.APIStatusError as e:
             raise LLMError(f"api error {e.status_code}: {e.message}") from e
         except anthropic.APIConnectionError as e:

@@ -21,8 +21,11 @@ async def discovery_then_match() -> None:
     settings = get_settings()
     report = await run_discovery(stagger_max=300.0)  # spread requests over 5 minutes
     if report.new_job_ids:
-        summary = await asyncio.to_thread(match_new_jobs, report.new_job_ids)
-        log.info("match_after_discovery", **summary)
+        try:
+            summary = await asyncio.to_thread(match_new_jobs, report.new_job_ids)
+            log.info("match_after_discovery", **summary)
+        except Exception as e:  # noqa: BLE001 - keep the scheduler alive; a bad key is logged loudly
+            log.error("match_after_discovery_failed", error=str(e))
 
 
 async def weekly_digests() -> None:
