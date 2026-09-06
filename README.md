@@ -67,6 +67,36 @@ odd hours during Central Standard Time) and can be triggered manually
 
 > Scheduled workflows are disabled by GitHub after 60 days without repo activity; any commit re-enables them.
 
+### 5. Reliable every-2-hours trigger (external scheduler)
+
+GitHub's built-in cron is best-effort: it can run late or skip slots, and it never fired for this repo on day one.
+The workflow therefore also accepts `workflow_dispatch`, and any external scheduler can fire it on the minute.
+
+1. **Token**: GitHub → Settings → Developer settings → Fine-grained personal access tokens → *Generate new token*.
+   Repository access: *Only select repositories* → `c2c-job-agent`. Permissions → Repository → **Actions: Read and write**
+   (Metadata: read is added automatically). Expiration: 1 year. Copy the `github_pat_…` value.
+2. **Test it once locally** (never commit the token):
+   ```bash
+   GH_DISPATCH_TOKEN=github_pat_xxx ./scripts/trigger.sh --dry-run
+   ```
+   A `204` means a run appeared under the Actions tab.
+3. **Scheduler**: create a free job at https://cron-job.org (or any cron service) with:
+
+   | Field | Value |
+   |---|---|
+   | URL | `https://api.github.com/repos/pagidipalli7/c2c-job-agent/actions/workflows/job_agent.yml/dispatches` |
+   | Method | `POST` |
+   | Header | `Authorization: Bearer github_pat_xxx` |
+   | Header | `Accept: application/vnd.github+json` |
+   | Header | `User-Agent: c2c-job-agent-trigger` |
+   | Body | `{"ref":"main"}` |
+   | Schedule | every 2 hours at minute 7, time zone **America/Chicago** (12:07 AM, 2:07 AM … 10:07 PM Central, year-round) |
+   | Expected status | `204` |
+
+   Because cron-job.org schedules in your local time zone, this also removes the daylight-saving shift that the
+   GitHub UTC cron has. Leave the GitHub `schedule:` in place as a backup; the `concurrency` group queues overlapping
+   runs and dedupe makes double-runs harmless.
+
 ## Local run
 
 ```bash
