@@ -4,6 +4,7 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
 from app.clients.api import router as clients_router
 from app.config import get_settings
@@ -41,6 +42,10 @@ def create_app(enable_scheduler: bool = True) -> FastAPI:
     app.include_router(escalations_router)
     app.include_router(webhook_router)
     app.include_router(admin_router)
+
+    @app.get("/", include_in_schema=False)
+    def root():
+        return RedirectResponse("/admin")
 
     @app.get("/health")
     def health():
