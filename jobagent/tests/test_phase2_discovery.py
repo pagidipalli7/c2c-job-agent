@@ -122,7 +122,7 @@ def test_run_discovery_populates_and_rerun_has_zero_duplicates(sim, registry):
     r2 = asyncio.run(run_discovery(concurrency=5))
     assert r2.jobs_new == 0 and r2.jobs_closed == 0
     assert len(registry.scalars(select(JobPosting)).all()) == len(total)
-    for c in registry.scalars(select(CompanyRegistry)):
+    for c in registry.scalars(select(CompanyRegistry).where(CompanyRegistry.active.is_(True))):
         assert c.last_crawled is not None and c.fail_count == 0
 
 
@@ -185,7 +185,7 @@ def test_workday_discovery_runs_every_search_term_without_duplicates(sim, monkey
     assert {j.raw["search_term"] for j in jobs} <= {"Power Platform", "Data Engineer"}
 
 
-def test_real_discovery_purges_simulated_jobs_and_cancels_their_applications(db, registry):
+def test_real_discovery_purges_simulated_jobs_and_cancels_their_applications(db, registry, seed_clients):
     from app.db.models import Application
     from app.discovery.store import purge_simulated
 
@@ -197,7 +197,7 @@ def test_real_discovery_purges_simulated_jobs_and_cancels_their_applications(db,
     jobs = db.scalars(select(JobPosting)).all()
     assert jobs and all(j.raw.get("simulated") for j in jobs)
     job = jobs[0]
-    db.add(Application(client_id=1, job_id=job.id, job_fingerprint=job.fingerprint, company_key="x", ats_type=job.ats_type, status="queued", trace_id="t"))
+    db.add(Application(client_id=seed_clients[0].id, job_id=job.id, job_fingerprint=job.fingerprint, company_key="x", ats_type=job.ats_type, status="queued", trace_id="t"))
     db.commit()
     closed, cancelled = purge_simulated(db)
     db.commit()
