@@ -1,0 +1,58 @@
+name: Priya Natarajan
+real_email: priya.natarajan.demo@example.com
+phone: "+1 408 555 0199"
+timezone: America/Los_Angeles
+resume_template: modern
+consent: true
+base_resume_approved: true
+
+profile:
+  first_name: Priya
+  last_name: Natarajan
+  headline: Data Engineer
+  summary: >
+    Data engineer with 5 years building batch and streaming pipelines on Spark, Airflow and
+    Snowflake. Comfortable owning data models end to end and partnering with analytics teams.
+  address: {city: San Jose, state: CA, postal_code: "95110", country: United States}
+  work_history:
+    - company: Globex Analytics
+      title: Data Engineer II
+      start: 2022-01
+      end: Present
+      location: San Jose, CA
+      bullets:
+        - Own 40+ Airflow DAGs loading 2 TB/day into Snowflake with dbt transformations
+        - Cut warehouse spend 30% by re-clustering tables and tuning Spark jobs
+        - Built streaming ingestion on Kafka and Spark Structured Streaming
+    - company: Initech
+      title: Data Engineer
+      start: 2019-07
+      end: 2021-12
+      location: Remote
+      bullets:
+        - Migrated on-prem SQL Server ETL to AWS Glue and Redshift
+        - Implemented data quality checks with Great Expectations
+  education:
+    - {school: San Jose State University, degree: M.S., field: Software Engineering, start: "2017", end: "2019"}
+    - {school: Anna University, degree: B.E., field: Computer Science, start: "2013", end: "2017"}
+  skills: [Python, SQL, Spark, Airflow, Snowflake, dbt, Kafka, AWS, Redshift, Glue, Terraform, Docker]
+  certifications:
+    - {name: AWS Certified Data Analytics - Specialty, issuer: Amazon, year: "2022"}
+  links: {linkedin: https://linkedin.com/in/priya-natarajan-demo, github: https://github.com/pnatarajan-demo}
+  eeo: {}
+  work_auth: {authorized_us: true, needs_sponsorship: true, visa_type: H-1B}
+  preferences:
+    target_titles: [Data Engineer, Senior Data Engineer, Analytics Engineer]
+    locations: [San Jose, CA, San Francisco, CA, Remote]
+    remote: include
+    min_salary: 150000
+    notice_period: 3 weeks
+    contract_types: [full_time]
+  blacklist:
+    companies: [Globex Analytics, Globex Corporation]
+    domains: [globex.com]
+
+answers:
+  - {question: "Are you legally authorized to work in the United States?", answer: "Yes"}
+  - {question: "Will you now or in the future require sponsorship for employment visa status?", answer: "Yes, H-1B transfer"}
+  - {question: "How did you hear about this job?", answer: "Company careers site"}
