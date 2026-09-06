@@ -1,90 +1,133 @@
-# Tarun Kumar — client intake. Personal details and preferences confirmed by Tarun; work-history dates/titles
-# and the items still marked EDIT are placeholders that must be corrected before approving the base resume (nothing is submitted until it is approved, and the resume is built from
-# the work_history below, so dates and titles must be exactly right - the tailoring validator will never
-# change them, but it can only be as truthful as this file).
+# Tarun Kumar — client intake. Work history, education and certifications are taken verbatim from
+# Tarun_Kumar_Resume.docx; preferences and answers confirmed by Tarun. The base resume is built from this
+# file and the tailoring validator never lets a submission drift from it.
 name: Tarun Kumar
 real_email: tarunkpp7@gmail.com
 phone: "+1 469 449 1959"
 timezone: America/Chicago
 resume_template: classic
-consent: true                      # explicit written consent to apply on your behalf
-base_resume_approved: false        # flip to true (or run add_client.py --approve-resume) after reviewing the PDF
+consent: true
+base_resume_approved: false        # approve after reviewing: python scripts/add_client.py clients/tarun.yaml --approve-resume
 
 profile:
   first_name: Tarun
   last_name: Kumar
-  headline: Power Platform Developer
+  headline: Power Platform & Data Engineer
   summary: >
-    Power Platform developer with 6+ years across utilities, healthcare and financial services, building
-    Canvas and Model-Driven Power Apps, Power Automate flows and Dataverse solutions on top of a strong
-    Azure data-engineering background (Databricks, Delta Lake, Azure Data Factory). Comfortable owning
-    Dynamics 365 customization, Power BI reporting with RLS, and integrations over REST, OData and FHIR.
-  address: {city: Dallas, state: TX, postal_code: "", country: United States}   # EDIT city/state/zip
+    Full stack Power Platform & Data Engineer with 6+ years building end to end enterprise platforms for
+    Fortune 500 utility, healthcare, and financial services organizations. Delivers everything from governed
+    lakehouse pipelines on Azure Databricks (PySpark, Delta Lake, Unity Catalog) and Microsoft Fabric to model
+    driven, canvas, and code first (React/TypeScript Code Apps) applications on Power Platform and Dynamics 365,
+    with Power Automate orchestration and Power BI analytics on top. Deep in ALM and CI/CD (GitLab, Azure DevOps,
+    Power Platform Pipelines, PAC CLI), enterprise integration (REST, Graph API, FHIR, custom connectors),
+    AI powered automation (Copilot Studio, AI Builder, Azure OpenAI), and secure by design governance
+    (DLP, RBAC, HIPAA/SOX).
+  address: {city: Dallas, state: TX, postal_code: "", country: United States}
   work_history:
     - company: Xcel Energy
-      title: Power Platform Developer                      # EDIT to your exact title
-      start: 2023-01                                       # EDIT
-      end: Present                                         # EDIT if not current
-      location: Remote
+      title: Power Platform & Data Engineer
+      start: 2026-01
+      end: Present
+      location: Dallas, TX
       bullets:
-        - Built Canvas and Model-Driven Power Apps on Dataverse for operations teams, with Power Automate flows for approvals and notifications
-        - Designed a Databricks lakehouse (bronze/silver/gold Delta Lake) feeding Power BI and Power Apps
-        - Integrated Power Platform with Azure Functions and REST/OData APIs; managed ALM with Azure DevOps
+        - Architected a closed loop lakehouse to application platform where governed asset data curated in Azure Databricks flows into Dataverse backed operational apps and user actions write back through the stack, a bidirectional architecture bridging analytics and operations for the Transmission organization
+        - Built PySpark and Spark SQL pipelines staging SAP master data through bronze, silver, and gold Delta Lake layers, orchestrated with Databricks Workflows and governed under Unity Catalog, eliminating data drift between the lakehouse and operational systems
+        - Designed the enterprise data model with normalized relational structures, SAP aligned master data entities (functional location hierarchies, object types), and role based security, serving as the single source of truth across intake, review, and asset management
+        - Delivered a code first Power Apps Code App (React + TypeScript on the Power Platform SDK) for high density asset review screens beyond canvas app limits, sharing Dataverse security and ALM with the rest of the solution
+        - Led migration of a business critical legacy system (8,400+ asset records in Excel/VBA) onto the governed platform with architecture first design, cascading validation, and full auditability, replacing years of manual reconciliation
+        - Delivered the multi application experience layer (canvas and model driven Power Apps, Power Automate cloud flows, Dynamics 365) with custom connectors and Graph API integration, event driven vendor data ingestion, and automated nightly Power BI reporting, cutting request turnaround from days to same day
+        - Owned CI/CD across both stacks, with Databricks artifacts and Power Platform managed solutions promoted through Dev/Test/Prod via GitLab pipelines and PAC CLI with zero downtime releases
     - company: Evolent Health
-      title: Data Engineer                                 # EDIT
-      start: 2021-01                                       # EDIT
-      end: 2022-12                                         # EDIT
-      location: Remote
+      title: Power Platform & Data Engineer
+      start: 2022-09
+      end: 2025-12
+      location: Dallas, TX
       bullets:
-        - Built a clinical analytics lakehouse on Databricks and Delta Lake with FHIR API ingestion
-        - Implemented HIPAA controls, RBAC and audit logging over regulated patient data
-        - Delivered Power BI reports (DirectQuery, DAX, row-level security) for clinical operations
+        - Designed a clinical analytics lakehouse on Azure Databricks with PySpark pipelines ingesting authorization, claims, and clinical data via Dataverse Synapse Link and external payer feeds through bronze, silver, and gold Delta Lake layers, processing 500K+ records/day for population health analytics
+        - Delivered the care authorization platform (model driven Power Apps, Dynamics 365, Dataverse) used daily by clinical review teams, cutting authorization turnaround 40% through Power Automate orchestration covering routing, SLA tracking, escalation, and Teams/Outlook notifications
+        - Built responsive canvas apps for intake and review workflows using delegation aware Power Fx (Named Formulas, Concurrent(), With(), ParseJSON()) and reusable component libraries for consistent, high performance UI
+        - Engineered near real time FHIR/REST integrations with payer and EHR systems via custom connectors and Azure Functions middleware, reconciling external clinical payloads against internal schemas with automated writeback, removing 15+ hours/week of manual data entry
+        - Applied AI Builder document processing to automate clinical document intake and piloted a Copilot Studio agent for authorization status self service, reducing routine status inquiries handled by reviewers
+        - Shipped Power BI (DirectQuery) dashboards over Databricks SQL covering utilization, turnaround, and clinical review analytics, embedded directly in the review application for 300+ daily users
+        - Built reusable PCF controls and component libraries (clinical timelines, status indicators) standardizing UI across the application suite
+        - Owned HIPAA grade governance with field level security for PHI, audit logging, RBAC, and environment level DLP policies across all environments with zero compliance findings
     - company: Wells Fargo
-      title: Data Engineer                                 # EDIT
-      start: 2019-01                                       # EDIT
-      end: 2020-12                                         # EDIT
-      location: Charlotte, NC                              # EDIT
+      title: Power Platform Developer / Data Engineer
+      start: 2021-10
+      end: 2022-08
+      location: Dallas, TX
       bullets:
-        - Built Azure Data Factory and Databricks pipelines for regulated financial data with incremental loads
-        - Modeled star/snowflake dimensional schemas with SCD Type 1/2 for reporting
-        - Enforced RBAC and audit requirements in a financial-services compliance environment
-    - company: SAP Plant Maintenance Analytics (contract)  # EDIT company name
-      title: BI Developer                                  # EDIT
-      start: 2018-01                                       # EDIT
-      end: 2018-12                                         # EDIT
-      location: Remote
+        - Built Azure Data Factory + Databricks pipelines transforming nested loan application JSON from origination and credit bureau systems into curated Delta Lake tables and Azure SQL marts under Medallion architecture with auditable lineage
+        - Designed a hybrid Dataverse + Azure SQL architecture unifying live applications with historical credit data in a single loan officer workspace, with parallel branch Power Automate validation across fraud, credit bureau, and compliance APIs reducing decision cycle time 35%
+        - Developed modular canvas apps using Named Formulas, Concurrent(), With(), and component libraries; implemented asynchronous polling patterns for long running credit scoring APIs with centralized error logging in Dataverse
+        - Contributed to the SAP BusinessObjects to Power BI migration, re platforming legacy WebI reporting onto the modern SQL/Databricks layer under managed solution ALM across Dev/Test/Prod
+    - company: Reliance Industries
+      title: Data Analyst
+      start: 2019-09
+      end: 2021-07
+      location: Hyderabad, India
       bullets:
-        - Built SAP BusinessObjects reports and Plant Maintenance data models
+        - Analyzed SAP Plant Maintenance data (work orders, functional locations, equipment history) with advanced SQL to surface maintenance backlog patterns and recurring equipment failures across refinery units, informing preventive maintenance planning
+        - Built a canvas based Work Permit application on Dataverse with Power Automate approval routing, digitizing manual safety workflows for field engineers
+        - Authored SAP BusinessObjects (Web Intelligence) reports and KPI dashboards for daily plant operations reviews; automated SQL data preparation routines, reducing report preparation time 60%
   education:
-    - {school: Central Michigan University, degree: M.S., field: Information Systems, start: "2021", end: "2023"}   # EDIT start year
-    - {school: "", degree: B.Tech, field: Computer Science, start: "2011", end: "2015"}                            # EDIT school + years
-  skills: [Power Apps, Power Automate, Dataverse, Dynamics 365, Power BI, Power Pages, DAX, SQL, T-SQL, Spark SQL, Python, PySpark, Azure Databricks, Delta Lake, Azure Data Factory, Azure Functions, Azure DevOps, GitLab CI/CD, REST, OData, FHIR, SAP integration, SAP BusinessObjects, Dimensional modeling, RBAC, HIPAA]
+    - {school: Central Michigan University, degree: Master of Science, field: Information Systems, start: "2021-08", end: "2022-07"}
+    - {school: JNTU Hyderabad, degree: Bachelor of Technology, field: Computer Science, start: "2016-08", end: "2020-09"}
+  skills:
+    - Power Apps (Canvas, Model Driven, Code Apps)
+    - Power Automate (Cloud Flows, Desktop/RPA)
+    - Dataverse
+    - Dynamics 365 CE
+    - Power BI (DirectQuery, Direct Lake, DAX)
+    - Power Pages
+    - Power Fx
+    - PCF Controls
+    - Custom Connectors
+    - Azure Databricks (PySpark, Spark SQL, Delta Lake, Unity Catalog, DLT)
+    - Microsoft Fabric (OneLake, Lakehouse, Direct Lake)
+    - Azure Data Factory
+    - Medallion architecture
+    - Dimensional modeling
+    - T-SQL
+    - Python (pandas, Flask, SQLAlchemy)
+    - TypeScript / JavaScript / React
+    - Copilot Studio
+    - AI Builder
+    - Azure OpenAI
+    - GitLab CI/CD
+    - Azure DevOps
+    - GitHub Actions
+    - Power Platform Pipelines / PAC CLI
+    - REST / OData / Microsoft Graph API / FHIR
+    - OAuth2 / Entra ID SSO
+    - DLP / RBAC / field level security
+    - HIPAA / SOX compliance
+    - SAP BusinessObjects
   certifications:
-    - {name: PL-400 Microsoft Power Platform Developer Associate, issuer: Microsoft}
-    - {name: PL-200 Microsoft Power Platform Functional Consultant Associate, issuer: Microsoft}
-    - {name: DP-203 Microsoft Azure Data Engineer Associate, issuer: Microsoft}
-    - {name: PL-900 Microsoft Power Platform Fundamentals, issuer: Microsoft}
+    - {name: Microsoft PL-400 Power Platform Developer, issuer: Microsoft}
+    - {name: Microsoft PL-200 Power Platform Functional Consultant, issuer: Microsoft}
+    - {name: Microsoft SC-900 Security, Compliance & Identity Fundamentals, issuer: Microsoft}
+    - {name: Databricks Certified Data Engineer Associate, issuer: Databricks}
   links: {linkedin: "https://www.linkedin.com/in/tarunkumarpp7/", github: "", portfolio: ""}
   eeo: {gender: Male, race: Asian, veteran: I am not a protected veteran, disability: "No, I do not have a disability"}
   work_auth: {authorized_us: true, needs_sponsorship: true, visa_type: H-1B}
   preferences:
-    target_titles: [Power Platform Developer, Power Apps Developer, Power Automate Developer, Dynamics 365 Developer, Dynamics 365 CE Developer, Dataverse Developer, Power BI Developer, Power Pages Developer, Power Platform Engineer, Power Platform Consultant, Data Engineer, Azure Data Engineer, Databricks Engineer]
+    target_titles: [Power Platform Developer, Power Platform Engineer, Power Platform Consultant, Power Apps Developer, Power Automate Developer, Dynamics 365 Developer, Dynamics 365 CE Developer, Dataverse Developer, Power BI Developer, Power Pages Developer, Data Engineer, Azure Data Engineer, Databricks Engineer, Analytics Engineer]
     exclude_title_keywords: [".net", salesforce, intern, director]
-    locations: []                                          # empty = anywhere in the USA
+    locations: []                                          # anywhere in the USA
     remote: include
-    min_salary: 90000                                      # floor only; you said "anything" - the scorer sees this, it is not a hard filter
+    min_salary: 90000                                      # floor for the scorer only; Tarun is open on compensation
     notice_period: Available immediately
-    contract_types: [contract, full_time, part_time]       # everything: C2C, W2 contract, full-time
+    contract_types: [contract, full_time, part_time]
   blacklist:
-    companies: [Xcel Energy]                               # EDIT: current employer + affiliates + any client you must not apply to
+    companies: [Xcel Energy]
     domains: [xcelenergy.com]
 
-# Pre-approved answers. Anything in the forbidden classes (salary, relocation, notice period, start date, clearance,
-# sponsorship...) is NEVER answered by the model - add your answer here or it will escalate to the operator.
 answers:
   - {question: "Are you legally authorized to work in the United States?", answer: "Yes"}
   - {question: "Will you now or in the future require sponsorship for employment visa status?", answer: "Yes, H-1B transfer"}
   - {question: "Do you require visa sponsorship?", answer: "Yes, H-1B transfer"}
+  - {question: "What is your visa status?", answer: "H-1B"}
   - {question: "How did you hear about this job?", answer: "Company careers site"}
   - {question: "Are you willing to relocate?", answer: "Yes, willing to relocate anywhere in the US"}
   - {question: "What is your notice period?", answer: "Available immediately"}
@@ -94,3 +137,5 @@ answers:
   - {question: "What is your expected hourly rate?", answer: "Open and negotiable based on the role and location"}
   - {question: "Desired compensation", answer: "Open and negotiable based on the role and location"}
   - {question: "Are you open to W2 or C2C?", answer: "Either - C2C, W2 contract or full-time are all fine"}
+  - {question: "Years of experience with Power Platform", answer: "6"}
+  - {question: "Years of experience with Azure Databricks", answer: "5"}
