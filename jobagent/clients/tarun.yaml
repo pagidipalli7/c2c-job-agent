@@ -1,11 +1,11 @@
-# Tarun Kumar — client intake. Prefilled from profile.md; every line marked EDIT must be checked before
-# approving the base resume (nothing is submitted until it is approved, and the resume is built from
+# Tarun Kumar — client intake. Personal details and preferences confirmed by Tarun; work-history dates/titles
+# and the items still marked EDIT are placeholders that must be corrected before approving the base resume (nothing is submitted until it is approved, and the resume is built from
 # the work_history below, so dates and titles must be exactly right - the tailoring validator will never
 # change them, but it can only be as truthful as this file).
 name: Tarun Kumar
-real_email: ptarun26@gmail.com
-phone: "+1 000 000 0000"          # EDIT
-timezone: America/Chicago          # EDIT if not Central
+real_email: tarunkpp7@gmail.com
+phone: "+1 469 449 1959"
+timezone: America/Chicago
 resume_template: classic
 consent: true                      # explicit written consent to apply on your behalf
 base_resume_approved: false        # flip to true (or run add_client.py --approve-resume) after reviewing the PDF
@@ -19,7 +19,7 @@ profile:
     Canvas and Model-Driven Power Apps, Power Automate flows and Dataverse solutions on top of a strong
     Azure data-engineering background (Databricks, Delta Lake, Azure Data Factory). Comfortable owning
     Dynamics 365 customization, Power BI reporting with RLS, and integrations over REST, OData and FHIR.
-  address: {city: Dallas, state: TX, postal_code: "75201", country: United States}   # EDIT
+  address: {city: Dallas, state: TX, postal_code: "", country: United States}   # EDIT city/state/zip
   work_history:
     - company: Xcel Energy
       title: Power Platform Developer                      # EDIT to your exact title
@@ -56,21 +56,25 @@ profile:
       bullets:
         - Built SAP BusinessObjects reports and Plant Maintenance data models
   education:
-    - {school: Central Michigan University, degree: M.S., field: Information Systems, start: "2016", end: "2018"}   # EDIT years
+    - {school: Central Michigan University, degree: M.S., field: Information Systems, start: "2021", end: "2023"}   # EDIT start year
     - {school: "", degree: B.Tech, field: Computer Science, start: "2011", end: "2015"}                            # EDIT school + years
   skills: [Power Apps, Power Automate, Dataverse, Dynamics 365, Power BI, Power Pages, DAX, SQL, T-SQL, Spark SQL, Python, PySpark, Azure Databricks, Delta Lake, Azure Data Factory, Azure Functions, Azure DevOps, GitLab CI/CD, REST, OData, FHIR, SAP integration, SAP BusinessObjects, Dimensional modeling, RBAC, HIPAA]
-  certifications: []                                       # EDIT: add PL-400 / PL-200 / DP-203 etc. only if you hold them
-  links: {linkedin: "", github: "", portfolio: ""}         # EDIT
-  eeo: {}                                                  # defaults to "Decline to self-identify" everywhere
+  certifications:
+    - {name: PL-400 Microsoft Power Platform Developer Associate, issuer: Microsoft}
+    - {name: PL-200 Microsoft Power Platform Functional Consultant Associate, issuer: Microsoft}
+    - {name: DP-203 Microsoft Azure Data Engineer Associate, issuer: Microsoft}
+    - {name: PL-900 Microsoft Power Platform Fundamentals, issuer: Microsoft}
+  links: {linkedin: "https://www.linkedin.com/in/tarunkumarpp7/", github: "", portfolio: ""}
+  eeo: {gender: Male, race: Asian, veteran: I am not a protected veteran, disability: "No, I do not have a disability"}
   work_auth: {authorized_us: true, needs_sponsorship: true, visa_type: H-1B}
   preferences:
-    target_titles: [Power Platform Developer, Power Apps Developer, Power Automate Developer, Dynamics 365 Developer, Dynamics 365 CE Developer, Dataverse Developer, Power BI Developer, Power Pages Developer, Power Platform Engineer]
-    exclude_title_keywords: [architect, principal, ".net", salesforce, intern, manager, director]
+    target_titles: [Power Platform Developer, Power Apps Developer, Power Automate Developer, Dynamics 365 Developer, Dynamics 365 CE Developer, Dataverse Developer, Power BI Developer, Power Pages Developer, Power Platform Engineer, Power Platform Consultant, Data Engineer, Azure Data Engineer, Databricks Engineer]
+    exclude_title_keywords: [".net", salesforce, intern, director]
     locations: []                                          # empty = anywhere in the USA
     remote: include
-    min_salary: 120000                                     # EDIT (annualised; used by the scorer, not a hard filter)
-    notice_period: 2 weeks                                 # EDIT
-    contract_types: [contract, full_time]                  # contract preferred; full-time postings are still scored
+    min_salary: 90000                                      # floor only; you said "anything" - the scorer sees this, it is not a hard filter
+    notice_period: Available immediately
+    contract_types: [contract, full_time, part_time]       # everything: C2C, W2 contract, full-time
   blacklist:
     companies: [Xcel Energy]                               # EDIT: current employer + affiliates + any client you must not apply to
     domains: [xcelenergy.com]
@@ -82,7 +86,11 @@ answers:
   - {question: "Will you now or in the future require sponsorship for employment visa status?", answer: "Yes, H-1B transfer"}
   - {question: "Do you require visa sponsorship?", answer: "Yes, H-1B transfer"}
   - {question: "How did you hear about this job?", answer: "Company careers site"}
-  - {question: "Are you willing to relocate?", answer: "Open to remote or on-site anywhere in the US"}
-  - {question: "What is your notice period?", answer: "2 weeks"}                        # EDIT
-  # - {question: "What are your salary expectations?", answer: "$XX - $YY per hour C2C / $ZZZk annual"}   # EDIT and uncomment
-  # - {question: "What is your earliest start date?", answer: "Two weeks from offer"}                      # EDIT and uncomment
+  - {question: "Are you willing to relocate?", answer: "Yes, willing to relocate anywhere in the US"}
+  - {question: "What is your notice period?", answer: "Available immediately"}
+  - {question: "What is your earliest start date?", answer: "As early as possible - immediately available"}
+  - {question: "When can you start?", answer: "As early as possible - immediately available"}
+  - {question: "What are your salary expectations?", answer: "Open and negotiable based on the role and location"}
+  - {question: "What is your expected hourly rate?", answer: "Open and negotiable based on the role and location"}
+  - {question: "Desired compensation", answer: "Open and negotiable based on the role and location"}
+  - {question: "Are you open to W2 or C2C?", answer: "Either - C2C, W2 contract or full-time are all fine"}
