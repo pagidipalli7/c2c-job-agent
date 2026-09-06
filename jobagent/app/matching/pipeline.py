@@ -104,6 +104,9 @@ def evaluate(session: Session, client: Client, profile: ProfileData, job: JobPos
         return Decision(**base, stage="dedup", decision="skip", reason="already applied (unique constraint)")
     app.events.append(ApplicationEvent(status="queued", note=f"score={result.score}; scheduled_at={scheduled_at.isoformat()}"))
     session.flush()
+    from app.queue import get_queue
+
+    get_queue().enqueue(app)
     log.info("application_queued", app_id=app.id, client_id=client.id, job_id=job.id, score=result.score, scheduled_at=scheduled_at.isoformat())
     return Decision(**base, stage="queued", decision="apply", reason="; ".join(result.reasons), score=result.score, missing_keywords=result.missing_keywords, scheduled_at=scheduled_at.isoformat())
 

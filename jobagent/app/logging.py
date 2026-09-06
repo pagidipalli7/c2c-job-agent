@@ -9,7 +9,7 @@ import structlog
 
 def configure_logging(json_logs: bool = True, level: int = logging.INFO) -> None:
     logging.basicConfig(format="%(message)s", stream=sys.stdout, level=level)
-    for noisy in ("httpx", "httpcore", "apscheduler", "anthropic._base_client"):
+    for noisy in ("httpx", "httpcore", "apscheduler", "anthropic._base_client", "weasyprint", "fontTools", "fontTools.subset", "fontTools.ttLib", "PIL"):
         logging.getLogger(noisy).setLevel(logging.WARNING)
     processors = [
         structlog.contextvars.merge_contextvars,
