@@ -179,3 +179,19 @@ def test_dismiss_cancels_application(db, alex, application):
     dismiss_escalation(db, r.escalation_id)
     db.refresh(application)
     assert application.status == "cancelled"
+
+
+@pytest.mark.parametrize(
+    "options,expected",
+    [
+        (["I am not a protected veteran", "I identify as a protected veteran", "I don't wish to answer"], "I don't wish to answer"),
+        (["Male", "Female", "I do not wish to answer"], "I do not wish to answer"),
+        (["Yes", "No", "Prefer not to say"], "Prefer not to say"),
+        (["Hispanic or Latino", "White", "Decline To Self Identify"], "Decline To Self Identify"),
+        (["Yes, I have a disability", "No, I do not have a disability", "I do not want to answer"], "I do not want to answer"),
+    ],
+)
+def test_eeo_decline_matches_every_common_phrasing(db, priya, options, expected):
+    q = {"I am not a protected veteran": "Veteran Status", "Male": "Gender", "Yes": "Disability status", "Hispanic or Latino": "Race/Ethnicity", "Yes, I have a disability": "Disability"}[options[0]]
+    r = answer_question(db, priya, q, options=options)
+    assert r.status == "answered" and r.answer == expected and r.source == "profile", r

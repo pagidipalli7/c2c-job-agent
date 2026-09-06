@@ -103,7 +103,7 @@ def _pick_option(answer: str, options: list[str], key: str) -> str | None:
     if key.startswith("eeo_"):
         for o in options:
             ol = o.lower()
-            if "decline" in a and ("decline" in ol or "not wish" in ol or "prefer not" in ol or "do not wish" in ol):
+            if "decline" in a and re.search(r"decline|not wish|n[o']t wish|prefer not|not want|don'?t want|choose not|not to answer|not to (self[- ])?identify|not disclose", ol):
                 return o
             if a in ol or ol in a:
                 return o
