@@ -1,0 +1,88 @@
+# Tarun Kumar — client intake. Prefilled from profile.md; every line marked EDIT must be checked before
+# approving the base resume (nothing is submitted until it is approved, and the resume is built from
+# the work_history below, so dates and titles must be exactly right - the tailoring validator will never
+# change them, but it can only be as truthful as this file).
+name: Tarun Kumar
+real_email: ptarun26@gmail.com
+phone: "+1 000 000 0000"          # EDIT
+timezone: America/Chicago          # EDIT if not Central
+resume_template: classic
+consent: true                      # explicit written consent to apply on your behalf
+base_resume_approved: false        # flip to true (or run add_client.py --approve-resume) after reviewing the PDF
+
+profile:
+  first_name: Tarun
+  last_name: Kumar
+  headline: Power Platform Developer
+  summary: >
+    Power Platform developer with 6+ years across utilities, healthcare and financial services, building
+    Canvas and Model-Driven Power Apps, Power Automate flows and Dataverse solutions on top of a strong
+    Azure data-engineering background (Databricks, Delta Lake, Azure Data Factory). Comfortable owning
+    Dynamics 365 customization, Power BI reporting with RLS, and integrations over REST, OData and FHIR.
+  address: {city: Dallas, state: TX, postal_code: "75201", country: United States}   # EDIT
+  work_history:
+    - company: Xcel Energy
+      title: Power Platform Developer                      # EDIT to your exact title
+      start: 2023-01                                       # EDIT
+      end: Present                                         # EDIT if not current
+      location: Remote
+      bullets:
+        - Built Canvas and Model-Driven Power Apps on Dataverse for operations teams, with Power Automate flows for approvals and notifications
+        - Designed a Databricks lakehouse (bronze/silver/gold Delta Lake) feeding Power BI and Power Apps
+        - Integrated Power Platform with Azure Functions and REST/OData APIs; managed ALM with Azure DevOps
+    - company: Evolent Health
+      title: Data Engineer                                 # EDIT
+      start: 2021-01                                       # EDIT
+      end: 2022-12                                         # EDIT
+      location: Remote
+      bullets:
+        - Built a clinical analytics lakehouse on Databricks and Delta Lake with FHIR API ingestion
+        - Implemented HIPAA controls, RBAC and audit logging over regulated patient data
+        - Delivered Power BI reports (DirectQuery, DAX, row-level security) for clinical operations
+    - company: Wells Fargo
+      title: Data Engineer                                 # EDIT
+      start: 2019-01                                       # EDIT
+      end: 2020-12                                         # EDIT
+      location: Charlotte, NC                              # EDIT
+      bullets:
+        - Built Azure Data Factory and Databricks pipelines for regulated financial data with incremental loads
+        - Modeled star/snowflake dimensional schemas with SCD Type 1/2 for reporting
+        - Enforced RBAC and audit requirements in a financial-services compliance environment
+    - company: SAP Plant Maintenance Analytics (contract)  # EDIT company name
+      title: BI Developer                                  # EDIT
+      start: 2018-01                                       # EDIT
+      end: 2018-12                                         # EDIT
+      location: Remote
+      bullets:
+        - Built SAP BusinessObjects reports and Plant Maintenance data models
+  education:
+    - {school: Central Michigan University, degree: M.S., field: Information Systems, start: "2016", end: "2018"}   # EDIT years
+    - {school: "", degree: B.Tech, field: Computer Science, start: "2011", end: "2015"}                            # EDIT school + years
+  skills: [Power Apps, Power Automate, Dataverse, Dynamics 365, Power BI, Power Pages, DAX, SQL, T-SQL, Spark SQL, Python, PySpark, Azure Databricks, Delta Lake, Azure Data Factory, Azure Functions, Azure DevOps, GitLab CI/CD, REST, OData, FHIR, SAP integration, SAP BusinessObjects, Dimensional modeling, RBAC, HIPAA]
+  certifications: []                                       # EDIT: add PL-400 / PL-200 / DP-203 etc. only if you hold them
+  links: {linkedin: "", github: "", portfolio: ""}         # EDIT
+  eeo: {}                                                  # defaults to "Decline to self-identify" everywhere
+  work_auth: {authorized_us: true, needs_sponsorship: true, visa_type: H-1B}
+  preferences:
+    target_titles: [Power Platform Developer, Power Apps Developer, Power Automate Developer, Dynamics 365 Developer, Dynamics 365 CE Developer, Dataverse Developer, Power BI Developer, Power Pages Developer, Power Platform Engineer]
+    exclude_title_keywords: [architect, principal, ".net", salesforce, intern, manager, director]
+    locations: []                                          # empty = anywhere in the USA
+    remote: include
+    min_salary: 120000                                     # EDIT (annualised; used by the scorer, not a hard filter)
+    notice_period: 2 weeks                                 # EDIT
+    contract_types: [contract, full_time]                  # contract preferred; full-time postings are still scored
+  blacklist:
+    companies: [Xcel Energy]                               # EDIT: current employer + affiliates + any client you must not apply to
+    domains: [xcelenergy.com]
+
+# Pre-approved answers. Anything in the forbidden classes (salary, relocation, notice period, start date, clearance,
+# sponsorship...) is NEVER answered by the model - add your answer here or it will escalate to the operator.
+answers:
+  - {question: "Are you legally authorized to work in the United States?", answer: "Yes"}
+  - {question: "Will you now or in the future require sponsorship for employment visa status?", answer: "Yes, H-1B transfer"}
+  - {question: "Do you require visa sponsorship?", answer: "Yes, H-1B transfer"}
+  - {question: "How did you hear about this job?", answer: "Company careers site"}
+  - {question: "Are you willing to relocate?", answer: "Open to remote or on-site anywhere in the US"}
+  - {question: "What is your notice period?", answer: "2 weeks"}                        # EDIT
+  # - {question: "What are your salary expectations?", answer: "$XX - $YY per hour C2C / $ZZZk annual"}   # EDIT and uncomment
+  # - {question: "What is your earliest start date?", answer: "Two weeks from offer"}                      # EDIT and uncomment

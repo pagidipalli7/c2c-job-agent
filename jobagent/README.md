@@ -40,7 +40,8 @@ jobagent/
   templates/resume/      classic.html, modern.html (single column, no tables/images)
   companies.yaml         company registry seed
   seed/client_*.yaml     example intake documents (2 fake clients)
-  scripts/               seed, add_client, detect_ats, run_discovery, dry_run, run_worker, run_one, run_api, send_digests, backup, gen_key
+  clients/*.yaml         real client intake files (clients/tarun.yaml is the first one)
+  scripts/               seed, add_client, show_resume, detect_ats, run_discovery, dry_run, run_worker, run_one, run_api, send_digests, backup, gen_key
   tests/                 187 tests (pytest); tests/fixtures/fake_workday is a local Workday-style wizard
 ```
 
@@ -100,7 +101,8 @@ python scripts/run_worker.py --once --simulate --force   # submit to fake Greenh
    `profile.work_auth`, `profile.preferences.min_salary`, `profile.preferences.target_titles`.
 2. Put every answer the client has pre-approved under `answers:` — especially the forbidden-class ones
    (salary, relocation, notice period, sponsorship). Those are the only way such questions get answered without you.
-3. `python scripts/add_client.py path/to/client.yaml --approve-resume` (or `POST /clients` with the same JSON).
+3. `python scripts/add_client.py path/to/client.yaml` (or `POST /clients` with the same JSON), then review the base resume:
+   `python scripts/show_resume.py --client <id> --pdf review.pdf`. When it is right, `python scripts/add_client.py path/to/client.yaml --approve-resume`.
    **Nothing is submitted until the base resume is approved**; re-running with a changed `base_resume` resets approval.
 4. Set `resume_template: classic|modern`, `timezone` (drives the 8am–8pm window).
 
