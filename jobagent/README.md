@@ -41,7 +41,7 @@ jobagent/
   companies.yaml         company registry seed
   seed/client_*.yaml     example intake documents (2 fake clients)
   clients/*.yaml         real client intake files (clients/tarun.yaml is the first one)
-  scripts/               seed, add_client, show_resume, detect_ats, run_discovery, dry_run, run_worker, run_one, run_api, send_digests, backup, gen_key
+  scripts/               seed, reset_db, add_client, show_resume, detect_ats, run_discovery, dry_run, run_worker, run_one, run_api, send_digests, backup, gen_key
   tests/                 187 tests (pytest); tests/fixtures/fake_workday is a local Workday-style wizard
 ```
 
@@ -55,7 +55,7 @@ playwright install chromium            # or set CHROMIUM_EXECUTABLE to an existi
 cp .env.example .env
 python scripts/gen_key.py              # paste into ENCRYPTION_KEY
 # fill ANTHROPIC_API_KEY, MAIL_WEBHOOK_SECRET, APPLY_DOMAIN, OPERATOR_EMAIL, ADMIN_PASSWORD
-python scripts/seed.py                 # 2 fake clients + companies.yaml
+python scripts/seed.py                 # companies.yaml + clients/*.yaml  (--demo adds the 2 fake clients)
 python -m pytest -q                    # ~4 min (Workday browser tests); add --ignore=tests/test_phase5d_workday.py for ~20s
 ```
 
