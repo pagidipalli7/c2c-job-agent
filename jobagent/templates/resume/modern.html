@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ r.name }} - Resume</title>
+<style>
+  @page { size: Letter; margin: 0.55in 0.65in; }
+  body { font-family: Georgia, "Times New Roman", serif; font-size: 10.5pt; color: #1a1a1a; line-height: 1.35; }
+  h1 { font-family: Arial, Helvetica, sans-serif; font-size: 22pt; margin: 0; color: #1f3a5f; }
+  .headline { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #1f3a5f; margin: 1pt 0 4pt 0; }
+  .contact { font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #444; margin-bottom: 10pt; }
+  h2 { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #1f3a5f; text-transform: uppercase; letter-spacing: 1.2pt; margin: 11pt 0 4pt 0; border-bottom: 1.5px solid #1f3a5f; }
+  .job { margin-bottom: 7pt; }
+  .job-head { font-weight: bold; }
+  .job-meta { font-size: 9.5pt; color: #444; font-style: italic; }
+  ul { margin: 2pt 0 0 14pt; padding: 0; }
+  li { margin: 0 0 1.5pt 0; }
+  p { margin: 0 0 4pt 0; }
+</style>
+</head>
+<body>
+  <h1>{{ r.name }}</h1>
+  {% if r.headline %}<div class="headline">{{ r.headline }}</div>{% endif %}
+  <div class="contact">
+    {%- set parts = [] -%}
+    {%- if contact.email %}{% set _ = parts.append(contact.email) %}{% endif -%}
+    {%- if contact.phone %}{% set _ = parts.append(contact.phone) %}{% endif -%}
+    {%- if contact.location %}{% set _ = parts.append(contact.location) %}{% endif -%}
+    {%- if contact.linkedin %}{% set _ = parts.append(contact.linkedin) %}{% endif -%}
+    {%- if contact.github %}{% set _ = parts.append(contact.github) %}{% endif -%}
+    {%- if contact.portfolio %}{% set _ = parts.append(contact.portfolio) %}{% endif -%}
+    {{ parts | join("  ·  ") }}
+  </div>
+  {% if r.summary %}<h2>Profile</h2><p>{{ r.summary }}</p>{% endif %}
+  {% if r.work_history %}<h2>Experience</h2>
+  {% for w in r.work_history %}
+    <div class="job">
+      <div class="job-head">{{ w.title }}, {{ w.company }}</div>
+      <div class="job-meta">{{ w.start }} – {{ w.end or "Present" }}{% if w.location %} · {{ w.location }}{% endif %}</div>
+      {% if w.bullets %}<ul>{% for b in w.bullets %}<li>{{ b }}</li>{% endfor %}</ul>{% endif %}
+    </div>
+  {% endfor %}{% endif %}
+  {% if r.skills %}<h2>Skills</h2><p>{{ r.skills | join(" · ") }}</p>{% endif %}
+  {% if r.education %}<h2>Education</h2>
+  {% for e in r.education %}
+    <p><strong>{{ e.school }}</strong>{% if e.degree or e.field %} — {{ e.degree or "" }}{% if e.field %} {{ e.field }}{% endif %}{% endif %}{% if e.end %} ({{ e.end }}){% endif %}</p>
+  {% endfor %}{% endif %}
+  {% if r.certifications %}<h2>Certifications</h2>
+  <ul>{% for c in r.certifications %}<li>{% if c is string %}{{ c }}{% else %}{{ c.name }}{% if c.issuer %}, {{ c.issuer }}{% endif %}{% if c.year %} ({{ c.year }}){% endif %}{% endif %}</li>{% endfor %}</ul>
+  {% endif %}
+</body>
+</html>
