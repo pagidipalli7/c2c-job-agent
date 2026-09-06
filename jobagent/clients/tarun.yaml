@@ -73,40 +73,11 @@ profile:
   education:
     - {school: Central Michigan University, degree: Master of Science, field: Information Systems, start: "2021-08", end: "2022-07"}
     - {school: JNTU Hyderabad, degree: Bachelor of Technology, field: Computer Science, start: "2016-08", end: "2020-09"}
-  skills:
-    - Power Apps (Canvas, Model Driven, Code Apps)
-    - Power Automate (Cloud Flows, Desktop/RPA)
-    - Dataverse
-    - Dynamics 365 CE
-    - Power BI (DirectQuery, Direct Lake, DAX)
-    - Power Pages
-    - Power Fx
-    - PCF Controls
-    - Custom Connectors
-    - Azure Databricks (PySpark, Spark SQL, Delta Lake, Unity Catalog, DLT)
-    - Microsoft Fabric (OneLake, Lakehouse, Direct Lake)
-    - Azure Data Factory
-    - Medallion architecture
-    - Dimensional modeling
-    - T-SQL
-    - Python (pandas, Flask, SQLAlchemy)
-    - TypeScript / JavaScript / React
-    - Copilot Studio
-    - AI Builder
-    - Azure OpenAI
-    - GitLab CI/CD
-    - Azure DevOps
-    - GitHub Actions
-    - Power Platform Pipelines / PAC CLI
-    - REST / OData / Microsoft Graph API / FHIR
-    - OAuth2 / Entra ID SSO
-    - DLP / RBAC / field level security
-    - HIPAA / SOX compliance
-    - SAP BusinessObjects
+  skills: [Power Apps, Canvas Apps, Model-Driven Apps, Power Apps Code Apps, Power Automate, Power Automate Desktop, Dataverse, Dynamics 365 CE, Power BI, DAX, Direct Lake, Power Pages, Power Fx, PCF Controls, Custom Connectors, Azure Databricks, PySpark, Spark SQL, Delta Lake, Unity Catalog, Delta Live Tables, Microsoft Fabric, OneLake, Azure Data Factory, Medallion architecture, Dimensional modeling, ETL/ELT, T-SQL, SQL, Python, pandas, TypeScript, JavaScript, React, Copilot Studio, AI Builder, Azure OpenAI, GitLab CI/CD, Azure DevOps, GitHub Actions, Power Platform Pipelines, PAC CLI, Managed solutions, REST, OData, Microsoft Graph API, FHIR, OAuth2, Entra ID, DLP policies, RBAC, HIPAA, SOX, SAP BusinessObjects, Azure Functions]
   certifications:
     - {name: Microsoft PL-400 Power Platform Developer, issuer: Microsoft}
     - {name: Microsoft PL-200 Power Platform Functional Consultant, issuer: Microsoft}
-    - {name: Microsoft SC-900 Security, Compliance & Identity Fundamentals, issuer: Microsoft}
+    - {name: "Microsoft SC-900 Security, Compliance & Identity Fundamentals", issuer: Microsoft}
     - {name: Databricks Certified Data Engineer Associate, issuer: Databricks}
   links: {linkedin: "https://www.linkedin.com/in/tarunkumarpp7/", github: "", portfolio: ""}
   eeo: {gender: Male, race: Asian, veteran: I am not a protected veteran, disability: "No, I do not have a disability"}

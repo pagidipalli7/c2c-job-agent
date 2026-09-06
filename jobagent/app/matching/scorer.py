@@ -102,14 +102,14 @@ def _mock_score(system: str, user: str) -> dict:
     """Keyword-overlap heuristic standing in for Haiku. Deterministic, roughly sensible."""
     prof, _, job = user.partition("\n\nJOB POSTING:\n")
     skills_line = next((l for l in prof.splitlines() if l.startswith("Skills:")), "")
-    skills = [s.strip().lower() for s in skills_line[len("Skills:"):].split(",") if s.strip()]
+    skills = [re.sub(r"\s*\(.*?\)", "", s).strip().lower() for s in re.split(r",(?![^()]*\))", skills_line[len("Skills:"):]) if s.strip()]
     titles_m = re.search(r"titles=\[(.*?)\]", prof)
     targets = [t.strip(" '\"").lower() for t in (titles_m.group(1).split(",") if titles_m else [])]
     job_l = job.lower()
     title_l = job_l.split("title:", 1)[1].split("\n", 1)[0].strip() if "title:" in job_l else ""
     title_hit = any(all(w in title_l for w in t.split() if w not in ("senior", "developer", "engineer")) for t in targets if t)
-    hits = [s for s in skills if s in job_l]
-    ratio = len(hits) / max(1, len(skills))
+    hits = [s for s in skills if any(part.strip() and part.strip() in job_l for part in s.split("/"))]
+    ratio = len(hits) / max(1, min(len(skills), 15))  # long skill lists are not penalised
     score = int(35 * title_hit + 55 * min(1.0, ratio * 2) + (10 if "authorized" in job_l else 5))
     needs_sponsor = "needs_sponsorship=true" in prof.lower()
     dealbreaker = needs_sponsor and ("no sponsorship" in job_l or "not sponsor" in job_l)
