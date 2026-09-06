@@ -1,0 +1,25 @@
+# Company registry seed. Edit freely, then `python scripts/seed.py` (idempotent).
+# Either give slug + ats, or just a careers URL and let detect_ats() figure it out.
+# ats: greenhouse | lever | ashby | smartrecruiters | workday (workday needs the full careers url).
+# LinkedIn / Indeed / Glassdoor / ZipRecruiter URLs are rejected on purpose.
+companies:
+  - {name: Stripe, slug: stripe, ats: greenhouse}
+  - {name: Databricks, slug: databricks, ats: greenhouse}
+  - {name: Figma, slug: figma, ats: greenhouse}
+  - {name: Cloudflare, slug: cloudflare, ats: greenhouse}
+  - {name: Anduril, slug: andurilindustries, ats: greenhouse}
+  - {name: Brex, slug: brex, ats: greenhouse}
+  - {name: Netflix, slug: netflix, ats: lever}
+  - {name: Plaid, slug: plaid, ats: lever}
+  - {name: Mistral AI, slug: mistral, ats: lever}
+  - {name: Ramp, slug: ramp, ats: ashby}
+  - {name: Linear, slug: linear, ats: ashby}
+  - {name: Notion, slug: notion, ats: ashby}
+  - {name: Vercel, slug: vercel, ats: ashby}
+  - {name: Deel, slug: deel, ats: ashby}
+  - {name: Bosch, slug: bosch, ats: smartrecruiters}
+  - {name: Visa, slug: visa, ats: smartrecruiters}
+  - {name: McDonald's, slug: mcdonalds, ats: smartrecruiters}
+  - {name: Kyndryl, url: https://kyndryl.wd5.myworkdayjobs.com/KyndrylProfessionalCareers, ats: workday}
+  - {name: Salesforce, url: https://salesforce.wd12.myworkdayjobs.com/External_Career_Site, ats: workday}
+  - {name: Adobe, url: https://adobe.wd5.myworkdayjobs.com/external_experienced, ats: workday}

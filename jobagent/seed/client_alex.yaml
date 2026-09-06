@@ -1,0 +1,71 @@
+# Example intake document. Copy, edit, then: python scripts/add_client.py seed/client_alex.yaml
+name: Alex Rivera
+real_email: alex.rivera.demo@example.com
+phone: "+1 512 555 0142"
+timezone: America/Chicago
+resume_template: classic
+consent: true            # explicit written consent on file
+base_resume_approved: true
+
+profile:
+  first_name: Alex
+  last_name: Rivera
+  headline: Senior Power Platform Developer
+  summary: >
+    Senior Power Platform developer with 7 years building Power Apps, Power Automate and
+    Dataverse solutions for enterprise clients. Led migrations from legacy Access/SharePoint
+    apps to model-driven apps serving 4,000+ users.
+  address: {city: Austin, state: TX, postal_code: "78701", country: United States}
+  work_history:
+    - company: Contoso Consulting
+      title: Senior Power Platform Developer
+      start: 2021-03
+      end: Present
+      location: Austin, TX
+      bullets:
+        - Built 12 model-driven and canvas apps on Dataverse for finance and HR workflows
+        - Designed Power Automate flows integrating Dynamics 365, SharePoint and Azure Functions
+        - Mentored 4 junior developers and set up ALM pipelines with Azure DevOps
+    - company: Fabrikam Inc
+      title: Power Apps Developer
+      start: 2018-06
+      end: 2021-02
+      location: Dallas, TX
+      bullets:
+        - Delivered 20+ canvas apps replacing paper processes in field operations
+        - Wrote Power BI reports over Dataverse with row-level security
+    - company: Northwind Traders
+      title: SharePoint Developer
+      start: 2016-01
+      end: 2018-05
+      location: Houston, TX
+      bullets:
+        - Maintained SharePoint 2013 farm and custom web parts in C#
+  education:
+    - {school: University of Texas at Austin, degree: B.S., field: Computer Science, start: "2012", end: "2016"}
+  skills: [Power Apps, Power Automate, Dataverse, Dynamics 365, Power BI, Power Pages, SharePoint, Azure Functions, C#, JavaScript, SQL, Azure DevOps, ALM]
+  certifications:
+    - {name: PL-400 Microsoft Power Platform Developer, issuer: Microsoft, year: "2022"}
+    - {name: PL-600 Power Platform Solution Architect, issuer: Microsoft, year: "2023"}
+  links: {linkedin: https://linkedin.com/in/alexrivera-demo, github: https://github.com/alexrivera-demo}
+  eeo: {gender: Decline to self-identify, race: Decline to self-identify, veteran: I am not a protected veteran, disability: Decline to self-identify}
+  work_auth: {authorized_us: true, needs_sponsorship: false, visa_type: null}
+  preferences:
+    target_titles: [Power Platform Developer, Power Apps Developer, Dynamics 365 Developer, Power Platform Architect, Dataverse Developer]
+    locations: [Austin, TX, Dallas, TX, Remote]
+    remote: include
+    min_salary: 130000
+    max_commute_miles: 30
+    notice_period: 2 weeks
+    contract_types: [full_time, contract]
+  blacklist:
+    companies: [Contoso Consulting, Contoso Holdings]
+    domains: [contoso.com]
+
+answers:
+  - {question: "Are you legally authorized to work in the United States?", answer: "Yes"}
+  - {question: "Will you now or in the future require sponsorship for employment visa status?", answer: "No"}
+  - {question: "How did you hear about this job?", answer: "Company careers site"}
+  - {question: "What is your desired salary?", answer: "$135,000 - $150,000"}
+  - {question: "Are you willing to relocate?", answer: "No, but open to remote or Austin/Dallas roles"}
+  - {question: "Years of experience with Power Platform", answer: "7"}

@@ -5,3 +5,8 @@ __pycache__/
 service_account.json
 *.log
 .DS_Store
+jobagent/data/
+jobagent/.env
+.pytest_cache/
+.coverage
+htmlcov/
