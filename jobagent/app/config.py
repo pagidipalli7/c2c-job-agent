@@ -33,7 +33,7 @@ class Settings(BaseSettings):
 
     # --- LLM ---------------------------------------------------------------
     llm_mode: str = "auto"  # live | mock | auto (live when key present, else mock)
-    haiku_model: str = "claude-haiku-4-5-20251001"
+    haiku_model: str = "claude-haiku-4-5"
     sonnet_model: str = "claude-sonnet-5"
 
     # --- outbound mail -----------------------------------------------------
