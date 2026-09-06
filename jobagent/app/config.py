@@ -62,6 +62,7 @@ class Settings(BaseSettings):
     adapter_health_min_success_rate: float = 0.70
     discovery_interval_hours: int = 2
     discovery_concurrency: int = 10
+    workday_search_terms: str = "Power Platform,Power Apps,Power Automate,Dynamics 365,Power BI,Dataverse,Data Engineer,Databricks"
     otp_wait_seconds: int = 120
     otp_session_ttl_seconds: int = 180
     headless: bool = True

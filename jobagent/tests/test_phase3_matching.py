@@ -224,3 +224,13 @@ def test_below_threshold_not_queued(db, alex):
     d = evaluate(db, alex, get_profile_data(alex), mk_job(db, company="B"), scorer=lambda p, j: ScoreResult(score=90, apply=False, reasons=["dealbreaker"]))
     assert d.decision == "skip" and "dealbreaker" in d.reason
     assert db.scalar(select(Application)) is None
+
+
+def test_title_filter_requires_domain_word(db, alex, priya):
+    pa, pp = get_profile_data(alex), get_profile_data(priya)
+    for bad in ("Platform Engineer", "Software Engineer, Developer Platform", "Cloud platform engineer"):
+        ok, name, _ = hard_filter(pa, mk_job(db, company=bad, title=bad))
+        assert not ok and name == "title", bad
+        ok, name, _ = hard_filter(pp, mk_job(db, company=bad + "2", title=bad, location="Remote", remote=True))
+        assert not ok and name == "title", bad
+    assert hard_filter(pp, mk_job(db, company="ok", title="Senior Data Engineer", location="Remote", remote=True))[0]

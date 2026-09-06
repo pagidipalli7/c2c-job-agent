@@ -93,6 +93,8 @@ def title_reason(profile: ProfileData, job: JobPosting) -> str | None:
         if not t_tokens:
             continue
         hits = sum(1 for w in t_tokens if w in title_tokens)
+        if t_tokens[0] not in title_tokens:
+            continue  # "Power Platform Developer" must not match "Platform Engineer"; "Data Engineer" not "Platform Engineer"
         if hits >= max(1, len(t_tokens) - 1) and hits / len(t_tokens) >= 0.6:
             return None
     return f"title {job.title!r} does not match target titles"

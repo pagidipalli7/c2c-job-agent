@@ -2,24 +2,53 @@
 # Either give slug + ats, or just a careers URL and let detect_ats() figure it out.
 # ats: greenhouse | lever | ashby | smartrecruiters | workday (workday needs the full careers url).
 # LinkedIn / Indeed / Glassdoor / ZipRecruiter URLs are rejected on purpose.
+#
+# Workday tenants are searched with each of WORKDAY_SEARCH_TERMS (see .env / config.py), so large tenants
+# like Accenture return the Power Platform / data roles rather than the first 100 postings.
 companies:
-  - {name: Stripe, slug: stripe, ats: greenhouse}
-  - {name: Databricks, slug: databricks, ats: greenhouse}
-  - {name: Figma, slug: figma, ats: greenhouse}
-  - {name: Cloudflare, slug: cloudflare, ats: greenhouse}
-  - {name: Anduril, slug: andurilindustries, ats: greenhouse}
-  - {name: Brex, slug: brex, ats: greenhouse}
-  - {name: Netflix, slug: netflix, ats: lever}
-  - {name: Plaid, slug: plaid, ats: lever}
-  - {name: Mistral AI, slug: mistral, ats: lever}
-  - {name: Ramp, slug: ramp, ats: ashby}
-  - {name: Linear, slug: linear, ats: ashby}
-  - {name: Notion, slug: notion, ats: ashby}
-  - {name: Vercel, slug: vercel, ats: ashby}
-  - {name: Deel, slug: deel, ats: ashby}
-  - {name: Bosch, slug: bosch, ats: smartrecruiters}
-  - {name: Visa, slug: visa, ats: smartrecruiters}
-  - {name: McDonald's, slug: mcdonalds, ats: smartrecruiters}
+  # --- Microsoft Dynamics / Power Platform partners -------------------------------------------
+  - {name: HSO, slug: hso, ats: lever}
+  - {name: MCA Connect, slug: mcaconnect, ats: lever}
+  # --- Consulting / SI (Workday) ---------------------------------------------------------------
+  - {name: Accenture, url: https://accenture.wd103.myworkdayjobs.com/AccentureCareers, ats: workday}
+  - {name: PwC, url: https://pwc.wd3.myworkdayjobs.com/Global_Experienced_Careers, ats: workday}
+  - {name: Booz Allen Hamilton, url: https://bah.wd1.myworkdayjobs.com/BAH_Jobs, ats: workday}
   - {name: Kyndryl, url: https://kyndryl.wd5.myworkdayjobs.com/KyndrylProfessionalCareers, ats: workday}
+  - {name: Leidos, url: https://leidos.wd5.myworkdayjobs.com/External, ats: workday}
+  - {name: GDIT, url: https://gdit.wd5.myworkdayjobs.com/External_Career_Site, ats: workday}
+  - {name: ICF, url: https://icf.wd5.myworkdayjobs.com/ICFExternal_Career_Site, ats: workday}
+  - {name: Guidehouse, url: https://guidehouse.wd1.myworkdayjobs.com/External, ats: workday}
+  # --- Enterprises with internal Power Platform / data teams (Workday) --------------------------
   - {name: Salesforce, url: https://salesforce.wd12.myworkdayjobs.com/External_Career_Site, ats: workday}
+  - {name: Nvidia, url: https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite, ats: workday}
   - {name: Adobe, url: https://adobe.wd5.myworkdayjobs.com/external_experienced, ats: workday}
+  - {name: Workday, url: https://workday.wd5.myworkdayjobs.com/Workday, ats: workday}
+  - {name: AT&T, url: https://att.wd1.myworkdayjobs.com/ATTGeneral, ats: workday}
+  - {name: Target, url: https://target.wd5.myworkdayjobs.com/targetcareers, ats: workday}
+  - {name: The Home Depot, url: https://homedepot.wd5.myworkdayjobs.com/CareerDepot, ats: workday}
+  - {name: 3M, url: https://3m.wd1.myworkdayjobs.com/Search, ats: workday}
+  # --- Tech (Greenhouse) - mostly data-engineering matches ---------------------------------------
+  - {name: Databricks, slug: databricks, ats: greenhouse}
+  - {name: Stripe, slug: stripe, ats: greenhouse}
+  - {name: Airbnb, slug: airbnb, ats: greenhouse}
+  - {name: Coinbase, slug: coinbase, ats: greenhouse}
+  - {name: Cloudflare, slug: cloudflare, ats: greenhouse}
+  - {name: Dropbox, slug: dropbox, ats: greenhouse}
+  - {name: Figma, slug: figma, ats: greenhouse}
+  - {name: Twilio, slug: twilio, ats: greenhouse}
+  - {name: Okta, slug: okta, ats: greenhouse}
+  - {name: Palantir, slug: palantir, ats: lever}
+  # --- retired: no longer on these ATSs / no matching roles ------------------------------------
+  - {name: Netflix, slug: netflix, ats: lever, active: false}
+  - {name: Plaid, slug: plaid, ats: lever, active: false}
+  - {name: Mistral AI, slug: mistral, ats: lever, active: false}
+  - {name: Ramp, slug: ramp, ats: ashby, active: false}
+  - {name: Linear, slug: linear, ats: ashby, active: false}
+  - {name: Notion, slug: notion, ats: ashby, active: false}
+  - {name: Vercel, slug: vercel, ats: ashby, active: false}
+  - {name: Deel, slug: deel, ats: ashby, active: false}
+  - {name: Bosch, slug: bosch, ats: smartrecruiters, active: false}
+  - {name: Visa, slug: visa, ats: smartrecruiters, active: false}
+  - {name: McDonald's, slug: mcdonalds, ats: smartrecruiters, active: false}
+  - {name: Anduril, slug: andurilindustries, ats: greenhouse, active: false}
+  - {name: Brex, slug: brex, ats: greenhouse, active: false}

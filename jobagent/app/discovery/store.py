@@ -10,6 +10,7 @@ from app.db.base import utcnow
 from app.db.models import CompanyRegistry, JobPosting
 
 from .base import RawJob
+from . import http as dhttp
 
 CLOSE_AFTER_MISSING = 2
 
@@ -39,6 +40,9 @@ def upsert_jobs(session: Session, company: CompanyRegistry, jobs: list[RawJob]) 
         seen_fps.add(fp)
         stats.seen += 1
         row = existing.get(fp) or session.scalar(select(JobPosting).where(JobPosting.fingerprint == fp))
+        raw = dict(rj.raw or {})
+        if dhttp._transport_override is not None:
+            raw["simulated"] = True
         if row is None:
             row = JobPosting(
                 fingerprint=fp,
@@ -56,7 +60,7 @@ def upsert_jobs(session: Session, company: CompanyRegistry, jobs: list[RawJob]) 
                 posted_at=rj.posted_at,
                 first_seen=now,
                 last_seen=now,
-                raw=rj.raw,
+                raw=raw,
             )
             session.add(row)
             stats.new += 1
@@ -89,3 +93,23 @@ def upsert_jobs(session: Session, company: CompanyRegistry, jobs: list[RawJob]) 
 
 def open_jobs(session: Session) -> list[JobPosting]:
     return list(session.scalars(select(JobPosting).where(JobPosting.status == "open").order_by(JobPosting.first_seen.desc())))
+
+
+def purge_simulated(session: Session) -> tuple[int, int]:
+    """Close every job that came from the offline simulator and cancel applications that point at one.
+    Called at the start of every real (non-simulated) discovery run."""
+    from app.db.models import Application, ApplicationEvent
+
+    closed = cancelled = 0
+    for job in session.scalars(select(JobPosting).where(JobPosting.status == "open")):
+        if (job.raw or {}).get("simulated"):
+            job.status = "closed"
+            closed += 1
+    sim_ids = [j.id for j in session.scalars(select(JobPosting)) if (j.raw or {}).get("simulated")]
+    if sim_ids:
+        for app in session.scalars(select(Application).where(Application.job_id.in_(sim_ids), Application.status.in_(("queued", "scheduled", "in_progress", "needs_otp", "needs_human", "failed")))):
+            app.status = "cancelled"
+            app.events.append(ApplicationEvent(status="cancelled", note="simulated job purged by real discovery"))
+            cancelled += 1
+    session.flush()
+    return closed, cancelled

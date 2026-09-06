@@ -28,7 +28,7 @@ def sim():
 def registry(db):
     n = load_companies_yaml(db, ROOT / "companies.yaml")
     db.commit()
-    assert n == 20
+    assert n >= 20
     return db
 
 
@@ -112,8 +112,9 @@ def test_fingerprint_normalisation():
 
 
 def test_run_discovery_populates_and_rerun_has_zero_duplicates(sim, registry):
+    active = len([c for c in registry.scalars(select(CompanyRegistry)) if c.active])
     r1 = asyncio.run(run_discovery(concurrency=5))
-    assert r1.companies_crawled == 20 and r1.companies_failed == 0
+    assert r1.companies_crawled == active and r1.companies_failed == 0
     assert r1.jobs_new > 50
     total = registry.scalars(select(JobPosting)).all()
     assert len(total) == r1.jobs_new
@@ -172,3 +173,35 @@ def test_runner_handles_gone_slug_and_failures(db):
     gone = db.scalar(select(CompanyRegistry).where(CompanyRegistry.slug == "gone-co"))
     db.refresh(gone)
     assert gone.active is False and "404" in gone.last_error
+
+
+def test_workday_discovery_runs_every_search_term_without_duplicates(sim, monkeypatch):
+    from app.config import get_settings
+    from app.discovery.workday_discovery import WorkdayDiscovery
+
+    monkeypatch.setattr(get_settings(), "workday_search_terms", "Power Platform,Data Engineer")
+    jobs = asyncio.run(WorkdayDiscovery().fetch_jobs("kyndryl", careers_url="https://kyndryl.wd5.myworkdayjobs.com/KyndrylProfessionalCareers", company_name="Kyndryl"))
+    assert jobs and len({j.raw["externalPath"] for j in jobs}) == len(jobs)
+    assert {j.raw["search_term"] for j in jobs} <= {"Power Platform", "Data Engineer"}
+
+
+def test_real_discovery_purges_simulated_jobs_and_cancels_their_applications(db, registry):
+    from app.db.models import Application
+    from app.discovery.store import purge_simulated
+
+    dhttp.set_transport(Simulator().transport())
+    try:
+        asyncio.run(run_discovery(concurrency=5))
+    finally:
+        dhttp.set_transport(None)
+    jobs = db.scalars(select(JobPosting)).all()
+    assert jobs and all(j.raw.get("simulated") for j in jobs)
+    job = jobs[0]
+    db.add(Application(client_id=1, job_id=job.id, job_fingerprint=job.fingerprint, company_key="x", ats_type=job.ats_type, status="queued", trace_id="t"))
+    db.commit()
+    closed, cancelled = purge_simulated(db)
+    db.commit()
+    assert closed == len(jobs) and cancelled == 1
+    db.expire_all()
+    assert db.get(JobPosting, job.id).status == "closed"
+    assert db.scalar(select(Application)).status == "cancelled"

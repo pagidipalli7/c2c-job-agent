@@ -14,7 +14,8 @@ from app.logging import get_logger
 from .base import CrawlError, RateLimited, SlugGone
 from .crawlers import SUBMIT_ONLY, get_crawler
 from .registry import active_companies, record_failure, record_success
-from .store import upsert_jobs
+from .store import purge_simulated, upsert_jobs
+from . import http as dhttp
 
 log = get_logger("discovery.runner")
 
@@ -92,6 +93,10 @@ async def run_discovery(concurrency: int | None = None, stagger_max: float = 0.0
     settings = get_settings()
     report = RunReport()
     with session_scope() as s:
+        if dhttp._transport_override is None:
+            closed, cancelled = purge_simulated(s)
+            if closed or cancelled:
+                log.warning("simulated_data_purged", jobs_closed=closed, applications_cancelled=cancelled)
         run = DiscoveryRun()
         s.add(run)
         s.flush()
