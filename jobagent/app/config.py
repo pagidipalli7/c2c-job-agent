@@ -4,7 +4,9 @@ from __future__ import annotations
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import Field
+import re
+
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PACKAGE_ROOT = Path(__file__).resolve().parent.parent  # jobagent/
@@ -64,6 +66,19 @@ class Settings(BaseSettings):
     otp_session_ttl_seconds: int = 180
     headless: bool = True
     chromium_executable: str | None = None  # e.g. /opt/pw-browsers/chromium-1194/chrome-linux/chrome when the bundled build is missing
+
+    @model_validator(mode="before")
+    @classmethod
+    def _strip_inline_comments(cls, data):
+        """`KEY=value   # comment` and `KEY=   # comment` in .env must yield `value` / empty, never the comment."""
+        if not isinstance(data, dict):
+            return data
+        cleaned = {}
+        for k, v in data.items():
+            if isinstance(v, str):
+                v = re.sub(r"(^|\s+)#.*$", "", v).strip()
+            cleaned[k] = v
+        return cleaned
 
     @property
     def effective_llm_mode(self) -> str:

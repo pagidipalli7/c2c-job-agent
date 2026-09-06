@@ -239,3 +239,16 @@ def test_live_client_maps_auth_error(monkeypatch):
     c._client.messages = Boom()
     with pytest.raises(LLMAuthError):
         c.complete("haiku", "s", "u", purpose="x")
+
+
+def test_settings_ignore_inline_env_comments(tmp_path, monkeypatch):
+    from app.config import Settings
+
+    monkeypatch.setenv("PROXY_URL", "   # optional, e.g. http://user:pass@host:port")
+    monkeypatch.setenv("REDIS_URL", "# empty -> DB-backed queue")
+    monkeypatch.setenv("DATABASE_URL", "sqlite:///x.db   # or postgres later")
+    s = Settings()
+    assert not s.proxy_url and not s.redis_url
+    assert s.database_url == "sqlite:///x.db"
+    monkeypatch.setenv("PROXY_URL", "http://user:pw@proxy.example:8080")
+    assert Settings().proxy_url == "http://user:pw@proxy.example:8080"
